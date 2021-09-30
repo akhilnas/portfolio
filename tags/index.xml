@@ -2,89 +2,89 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Akhil Nasser</title>
-    <link>https://example.com/tags/</link>
+    <link>https://akhilnas.github.io/tags/</link>
     <description>Recent content in Tags on Akhil Nasser</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 10 Sep 2021 11:14:48 -0400</lastBuildDate><atom:link href="https://example.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 10 Sep 2021 11:14:48 -0400</lastBuildDate><atom:link href="https://akhilnas.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>AWS:Sagemaker</title>
-      <link>https://example.com/tags/awssagemaker/</link>
+      <link>https://akhilnas.github.io/tags/awssagemaker/</link>
       <pubDate>Fri, 10 Sep 2021 11:14:48 -0400</pubDate>
       
-      <guid>https://example.com/tags/awssagemaker/</guid>
+      <guid>https://akhilnas.github.io/tags/awssagemaker/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Data Science</title>
-      <link>https://example.com/tags/data-science/</link>
+      <link>https://akhilnas.github.io/tags/data-science/</link>
       <pubDate>Fri, 10 Sep 2021 11:14:48 -0400</pubDate>
       
-      <guid>https://example.com/tags/data-science/</guid>
+      <guid>https://akhilnas.github.io/tags/data-science/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Medical</title>
-      <link>https://example.com/tags/medical/</link>
+      <link>https://akhilnas.github.io/tags/medical/</link>
       <pubDate>Fri, 10 Sep 2021 11:14:48 -0400</pubDate>
       
-      <guid>https://example.com/tags/medical/</guid>
+      <guid>https://akhilnas.github.io/tags/medical/</guid>
       <description></description>
     </item>
     
     <item>
       <title>MLOps</title>
-      <link>https://example.com/tags/mlops/</link>
+      <link>https://akhilnas.github.io/tags/mlops/</link>
       <pubDate>Fri, 10 Sep 2021 11:14:48 -0400</pubDate>
       
-      <guid>https://example.com/tags/mlops/</guid>
+      <guid>https://akhilnas.github.io/tags/mlops/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Machine Learning</title>
-      <link>https://example.com/tags/machine-learning/</link>
+      <link>https://akhilnas.github.io/tags/machine-learning/</link>
       <pubDate>Wed, 11 Aug 2021 11:13:32 -0400</pubDate>
       
-      <guid>https://example.com/tags/machine-learning/</guid>
+      <guid>https://akhilnas.github.io/tags/machine-learning/</guid>
       <description></description>
     </item>
     
     <item>
       <title>AWS</title>
-      <link>https://example.com/tags/aws/</link>
+      <link>https://akhilnas.github.io/tags/aws/</link>
       <pubDate>Thu, 10 Jun 2021 11:00:59 -0400</pubDate>
       
-      <guid>https://example.com/tags/aws/</guid>
+      <guid>https://akhilnas.github.io/tags/aws/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Flask</title>
-      <link>https://example.com/tags/flask/</link>
+      <link>https://akhilnas.github.io/tags/flask/</link>
       <pubDate>Thu, 10 Jun 2021 11:00:59 -0400</pubDate>
       
-      <guid>https://example.com/tags/flask/</guid>
+      <guid>https://akhilnas.github.io/tags/flask/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Transfer Learning</title>
-      <link>https://example.com/tags/transfer-learning/</link>
+      <link>https://akhilnas.github.io/tags/transfer-learning/</link>
       <pubDate>Thu, 10 Jun 2021 11:00:59 -0400</pubDate>
       
-      <guid>https://example.com/tags/transfer-learning/</guid>
+      <guid>https://akhilnas.github.io/tags/transfer-learning/</guid>
       <description></description>
     </item>
     
     <item>
       <title>scene</title>
-      <link>https://example.com/tags/scene/</link>
+      <link>https://akhilnas.github.io/tags/scene/</link>
       <pubDate>Sun, 09 Apr 2017 10:58:08 -0400</pubDate>
       
-      <guid>https://example.com/tags/scene/</guid>
+      <guid>https://akhilnas.github.io/tags/scene/</guid>
       <description></description>
     </item>
     
