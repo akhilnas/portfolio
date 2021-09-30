@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>AWS:Sagemaker on Akhil Nasser</title>
+    <link>https://example.com/tags/awssagemaker/</link>
+    <description>Recent content in AWS:Sagemaker on Akhil Nasser</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 10 Sep 2021 11:14:48 -0400</lastBuildDate><atom:link href="https://example.com/tags/awssagemaker/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Project 4: Metastasis Detection in Cell Slices</title>
+      <link>https://example.com/post/project-4/</link>
+      <pubDate>Fri, 10 Sep 2021 11:14:48 -0400</pubDate>
+      
+      <guid>https://example.com/post/project-4/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Project 3: Santander Customer Transaction Prediction</title>
+      <link>https://example.com/post/project-3/</link>
+      <pubDate>Wed, 11 Aug 2021 11:13:32 -0400</pubDate>
+      
+      <guid>https://example.com/post/project-3/</guid>
+      <description>Photo by Beatriz Pérez Moyaon Unsplash</description>
+    </item>
+    
+  </channel>
+</rss>
