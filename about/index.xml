@@ -2,9 +2,9 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>About on Akhil Nasser</title>
-    <link>https://akhilnas.github.io/about/</link>
+    <link>https://akhilnas.github.io/portfolio/about/</link>
     <description>Recent content in About on Akhil Nasser</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://akhilnas.github.io/about/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="https://akhilnas.github.io/portfolio/about/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>

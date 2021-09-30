@@ -2,46 +2,46 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://akhilnas.github.io/de/categories/</loc>
+    <loc>https://akhilnas.github.io/portfolio/de/categories/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://akhilnas.github.io/categories/"
+                href="https://akhilnas.github.io/portfolio/categories/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="de"
-                href="https://akhilnas.github.io/de/categories/"
+                href="https://akhilnas.github.io/portfolio/de/categories/"
                 />
   </url><url>
-    <loc>https://akhilnas.github.io/de/</loc>
+    <loc>https://akhilnas.github.io/portfolio/de/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://akhilnas.github.io/"
+                href="https://akhilnas.github.io/portfolio/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="de"
-                href="https://akhilnas.github.io/de/"
+                href="https://akhilnas.github.io/portfolio/de/"
                 />
   </url><url>
-    <loc>https://akhilnas.github.io/de/tags/</loc>
+    <loc>https://akhilnas.github.io/portfolio/de/tags/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://akhilnas.github.io/tags/"
+                href="https://akhilnas.github.io/portfolio/tags/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="de"
-                href="https://akhilnas.github.io/de/tags/"
+                href="https://akhilnas.github.io/portfolio/de/tags/"
                 />
   </url>
 </urlset>

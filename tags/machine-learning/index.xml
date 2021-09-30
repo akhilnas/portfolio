@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Machine Learning on Akhil Nasser</title>
-    <link>https://akhilnas.github.io/tags/machine-learning/</link>
+    <link>https://akhilnas.github.io/portfolio/tags/machine-learning/</link>
     <description>Recent content in Machine Learning on Akhil Nasser</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 11 Aug 2021 11:13:32 -0400</lastBuildDate><atom:link href="https://akhilnas.github.io/tags/machine-learning/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 11 Aug 2021 11:13:32 -0400</lastBuildDate><atom:link href="https://akhilnas.github.io/portfolio/tags/machine-learning/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Project 3: Santander Customer Transaction Prediction</title>
-      <link>https://akhilnas.github.io/post/project-3/</link>
+      <link>https://akhilnas.github.io/portfolio/post/project-3/</link>
       <pubDate>Wed, 11 Aug 2021 11:13:32 -0400</pubDate>
       
-      <guid>https://akhilnas.github.io/post/project-3/</guid>
+      <guid>https://akhilnas.github.io/portfolio/post/project-3/</guid>
       <description>Photo by Beatriz Pérez Moyaon Unsplash</description>
     </item>
     
