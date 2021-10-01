@@ -6,22 +6,31 @@
     <description>Recent content in Tags on Akhil Nasser</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 10 Sep 2021 11:14:48 -0400</lastBuildDate><atom:link href="https://akhilnas.github.io/portfolio/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 01 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://akhilnas.github.io/portfolio/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>AWS:Sagemaker</title>
-      <link>https://akhilnas.github.io/portfolio/tags/awssagemaker/</link>
-      <pubDate>Fri, 10 Sep 2021 11:14:48 -0400</pubDate>
+      <title>t</title>
+      <link>https://akhilnas.github.io/portfolio/tags/t/</link>
+      <pubDate>Fri, 01 Oct 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://akhilnas.github.io/portfolio/tags/awssagemaker/</guid>
+      <guid>https://akhilnas.github.io/portfolio/tags/t/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Data Science</title>
       <link>https://akhilnas.github.io/portfolio/tags/data-science/</link>
-      <pubDate>Fri, 10 Sep 2021 11:14:48 -0400</pubDate>
+      <pubDate>Fri, 10 Sep 2021 11:14:48 -0500</pubDate>
       
       <guid>https://akhilnas.github.io/portfolio/tags/data-science/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>AWS:Sagemaker</title>
+      <link>https://akhilnas.github.io/portfolio/tags/awssagemaker/</link>
+      <pubDate>Fri, 10 Sep 2021 11:14:48 -0400</pubDate>
+      
+      <guid>https://akhilnas.github.io/portfolio/tags/awssagemaker/</guid>
       <description></description>
     </item>
     
@@ -80,11 +89,29 @@
     </item>
     
     <item>
-      <title>scene</title>
-      <link>https://akhilnas.github.io/portfolio/tags/scene/</link>
-      <pubDate>Sun, 09 Apr 2017 10:58:08 -0400</pubDate>
+      <title>Autoencoder</title>
+      <link>https://akhilnas.github.io/portfolio/tags/autoencoder/</link>
+      <pubDate>Sun, 09 May 2021 10:58:08 -0400</pubDate>
       
-      <guid>https://akhilnas.github.io/portfolio/tags/scene/</guid>
+      <guid>https://akhilnas.github.io/portfolio/tags/autoencoder/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Deep Learning</title>
+      <link>https://akhilnas.github.io/portfolio/tags/deep-learning/</link>
+      <pubDate>Sun, 09 May 2021 10:58:08 -0400</pubDate>
+      
+      <guid>https://akhilnas.github.io/portfolio/tags/deep-learning/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Thesis</title>
+      <link>https://akhilnas.github.io/portfolio/tags/thesis/</link>
+      <pubDate>Sun, 09 May 2021 10:58:08 -0400</pubDate>
+      
+      <guid>https://akhilnas.github.io/portfolio/tags/thesis/</guid>
       <description></description>
     </item>
     

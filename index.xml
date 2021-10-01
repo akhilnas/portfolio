@@ -6,14 +6,31 @@
     <description>Recent content in Data Science Portfolio on Akhil Nasser</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 10 Sep 2021 11:14:48 -0400</lastBuildDate><atom:link href="https://akhilnas.github.io/portfolio/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 01 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://akhilnas.github.io/portfolio/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Project 5: Music Recommendations</title>
+      <link>https://akhilnas.github.io/portfolio/post/project-6/</link>
+      <pubDate>Fri, 01 Oct 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://akhilnas.github.io/portfolio/post/project-6/</guid>
+      <description>Currently in Progress.</description>
+    </item>
+    
     <item>
       <title>Data Science Skills</title>
-      <link>https://akhilnas.github.io/portfolio/post/skills/</link>
-      <pubDate>Fri, 10 Sep 2021 11:14:48 -0400</pubDate>
+      <link>https://akhilnas.github.io/portfolio/post/project-5/</link>
+      <pubDate>Fri, 10 Sep 2021 11:14:48 -0500</pubDate>
       
-      <guid>https://akhilnas.github.io/portfolio/post/skills/</guid>
-      <description>Photo by Pietro Jengon Unsplash</description>
+      <guid>https://akhilnas.github.io/portfolio/post/project-5/</guid>
+      <description>1. SQL
+I demonstrate my familiarity with SQL. This exercise was carried out using the Microsoft SQL Server. There is a demonstration of Data cleaning, Data formatting and Data extraction of relevant information for further analysis.
+Github Link
+2. Web Scraping
+Github Link
+3. Data Cleaning
+Github Link
+4. Tableau
+Photo by Pietro Jeng on Unsplash</description>
     </item>
     
     <item>
@@ -31,7 +48,9 @@
       <pubDate>Wed, 11 Aug 2021 11:13:32 -0400</pubDate>
       
       <guid>https://akhilnas.github.io/portfolio/post/project-3/</guid>
-      <description>Photo by Beatriz Pérez Moyaon Unsplash</description>
+      <description>Inspiration Project Objective Baseline Human Level Performance Since this is a strucutred data we cannot easily establish a Human Level Pefromance Benchmark.
+Implementation Details Since this is a Kaggle Dataset
+Results Further Ideas References  (1): Photo by Beatriz Pérez Moya on Unsplash  </description>
     </item>
     
     <item>
@@ -46,10 +65,11 @@
     <item>
       <title>Project 1: Master Thesis : Auto-Encoder Sparse Grids</title>
       <link>https://akhilnas.github.io/portfolio/post/project-1/</link>
-      <pubDate>Sun, 09 Apr 2017 10:58:08 -0400</pubDate>
+      <pubDate>Sun, 09 May 2021 10:58:08 -0400</pubDate>
       
       <guid>https://akhilnas.github.io/portfolio/post/project-1/</guid>
-      <description></description>
+      <description>This work was completed as part of my Master Thesis for the Computational Science program at the Technical University of Munich.
+Motivation Implementation Results References  Image from Wikimedia Commons  </description>
     </item>
     
     <item>

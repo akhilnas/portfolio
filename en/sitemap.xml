@@ -2,18 +2,8 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://akhilnas.github.io/portfolio/tags/awssagemaker/</loc>
-    <lastmod>2021-09-10T11:14:48-04:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://akhilnas.github.io/portfolio/tags/data-science/</loc>
-    <lastmod>2021-09-10T11:14:48-04:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
     <loc>https://akhilnas.github.io/portfolio/</loc>
-    <lastmod>2021-09-10T11:14:48-04:00</lastmod>
+    <lastmod>2021-10-01T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
     <xhtml:link
@@ -27,7 +17,42 @@
                 href="https://akhilnas.github.io/portfolio/"
                 />
   </url><url>
-    <loc>https://akhilnas.github.io/portfolio/post/skills/</loc>
+    <loc>https://akhilnas.github.io/portfolio/post/project-6/</loc>
+    <lastmod>2021-10-01T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://akhilnas.github.io/portfolio/tags/t/</loc>
+    <lastmod>2021-10-01T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://akhilnas.github.io/portfolio/tags/</loc>
+    <lastmod>2021-10-01T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="de"
+                href="https://akhilnas.github.io/portfolio/de/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://akhilnas.github.io/portfolio/tags/"
+                />
+  </url><url>
+    <loc>https://akhilnas.github.io/portfolio/tags/data-science/</loc>
+    <lastmod>2021-09-10T11:14:48-05:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://akhilnas.github.io/portfolio/post/project-5/</loc>
+    <lastmod>2021-09-10T11:14:48-05:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://akhilnas.github.io/portfolio/tags/awssagemaker/</loc>
     <lastmod>2021-09-10T11:14:48-04:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -46,21 +71,6 @@
     <lastmod>2021-09-10T11:14:48-04:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
-  </url><url>
-    <loc>https://akhilnas.github.io/portfolio/tags/</loc>
-    <lastmod>2021-09-10T11:14:48-04:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-    <xhtml:link
-                rel="alternate"
-                hreflang="de"
-                href="https://akhilnas.github.io/portfolio/de/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://akhilnas.github.io/portfolio/tags/"
-                />
   </url><url>
     <loc>https://akhilnas.github.io/portfolio/tags/machine-learning/</loc>
     <lastmod>2021-08-11T11:13:32-04:00</lastmod>
@@ -92,13 +102,23 @@
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
-    <loc>https://akhilnas.github.io/portfolio/post/project-1/</loc>
-    <lastmod>2017-04-09T10:58:08-04:00</lastmod>
+    <loc>https://akhilnas.github.io/portfolio/tags/autoencoder/</loc>
+    <lastmod>2021-05-09T10:58:08-04:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
-    <loc>https://akhilnas.github.io/portfolio/tags/scene/</loc>
-    <lastmod>2017-04-09T10:58:08-04:00</lastmod>
+    <loc>https://akhilnas.github.io/portfolio/tags/deep-learning/</loc>
+    <lastmod>2021-05-09T10:58:08-04:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://akhilnas.github.io/portfolio/post/project-1/</loc>
+    <lastmod>2021-05-09T10:58:08-04:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://akhilnas.github.io/portfolio/tags/thesis/</loc>
+    <lastmod>2021-05-09T10:58:08-04:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>

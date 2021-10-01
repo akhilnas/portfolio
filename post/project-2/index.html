@@ -36,7 +36,7 @@
 <meta itemprop="name" content="Project 2: Deep Learning with Chest Radiographs">
 <meta itemprop="description" content="An end-to-end solution for the detection of Pneumonia in Chest Radiographs"><meta itemprop="datePublished" content="2021-06-10T11:00:59-04:00" />
 <meta itemprop="dateModified" content="2021-06-10T11:00:59-04:00" />
-<meta itemprop="wordCount" content="236">
+<meta itemprop="wordCount" content="361">
 <meta itemprop="keywords" content="Medical,AWS,Flask,Transfer Learning," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Project 2: Deep Learning with Chest Radiographs"/>
 <meta name="twitter:description" content="An end-to-end solution for the detection of Pneumonia in Chest Radiographs"/>
@@ -169,10 +169,19 @@
 <p>The penetration of health insurance across India stood at around 35 percent as of financial year 2018. However, a large section of the society was covered via government sponsored health care schemes, even though the coverage provided was inadequate⁽¹⁾. One of the most pressing problems in India remains a severe shortage of trained manpower in the medical stream, this includes doctors, nurses, paramedics and primary healthcare workers. &hellip; The doctor-to-patient ratio remains abysmally low, which is merely 0.7 doctors per 1,000 people⁽²⁾.</p>
 <p>This scenario is found across much of the developing world. It is in the backdrop of this reality that the AI in Medical Sciences induistry is booming filling a gap of qualified healthcare workers along with providing new insights to those in the medical field.</p>
 <h2 id="project-objective">Project Objective</h2>
-<p>The aim of this Project is to be able to</p>
+<p>The aim of this Project is to be able to build an Online Service wherein people can upload their Chest Radiographs and can get to know if they have Pneumonia or not.</p>
+<p>The metric being chosen for optimation is the Area under the Curve of the Reciever-Operator Characteristic plot. The higher the AUC the better the trained model is at distinguisinh the classes.</p>
+<p>Since this is a Medical domain problem the importance of False Negatives cannot be underestimated. This is potentially more dangerous than False Positives.</p>
 <h3 id="baseline-human-level-performance">Baseline Human Level Performance</h3>
+<p>THe Human Level Performace (HLP) is taken from the Article &ldquo;Comparison of Chest Radiograph Interpretations by Artificial Intelligence Algorithm vs Radiology Residents&rdquo;. The article states that</p>
 <h2 id="implementation-details">Implementation Details</h2>
-<p>The Project falls within the domain of Image Classification. In order to take advantage of a large expressive model to improve classification accuraccy while ast the same time not going through the whole process of trainign the model, I decide to use Transfer learning with the VGG16 model. This is a model trained</p>
+<p>The Project falls within the domain of Image Classification. In order to take advantage of a large expressive model to improve classification accuraccy while ast the same time not going through the whole process of trainign the model, I decide to use Transfer learning with the VGG16 model. This is a model trained on the ImageNet Dataset and achieved a very high top-5 test acuraccy. The architecture is as follows.</p>
+<p><figure><img src="/images/cells.jpg"/><figcaption>
+            <h4>VGG16 architecture</h4>
+        </figcaption>
+</figure>
+
+<img src="/images/cells.jpg" alt="alt text"></p>
 <p><a href="https://github.com/akhilnas/medical-chest-xray">Github Repository</a></p>
 <h2 id="results">Results</h2>
 <h2 id="further-ideas">Further Ideas</h2>
@@ -185,8 +194,8 @@
 <ul>
 <li>(1): <a href="https://www.statista.com/statistics/1080112/india-health-insurance-penetration/">Statista</a></li>
 <li>(2): <a href="https://www.thehindubusinessline.com/news/national/5-reasons-why-indias-healthcare-system-is-struggling/article34665535.ece">HinduBusinessLine</a></li>
-<li>(3): All images taken from <a href="https://unsplash.com/">Unsplash</a></li>
-<li></li>
+<li>(3): Photo by <a href="https://unsplash.com/@umanoide?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Umanoide</a> on <a href="https://unsplash.com/s/photos/x-ray?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></li>
+<li>(4): <a href="https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2771528">Human Level Performace</a></li>
 </ul>
 <ul class="pa0">
   
