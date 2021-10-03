@@ -2,6 +2,61 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://akhilnas.github.io/portfolio/de/post/chapter-1/</loc>
+    <lastmod>2017-04-09T10:58:08-04:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://akhilnas.github.io/portfolio/de/</loc>
+    <lastmod>2017-04-09T10:58:08-04:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://akhilnas.github.io/portfolio/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="de"
+                href="https://akhilnas.github.io/portfolio/de/"
+                />
+  </url><url>
+    <loc>https://akhilnas.github.io/portfolio/de/tags/scene/</loc>
+    <lastmod>2017-04-09T10:58:08-04:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://akhilnas.github.io/portfolio/de/tags/</loc>
+    <lastmod>2017-04-09T10:58:08-04:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://akhilnas.github.io/portfolio/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="de"
+                href="https://akhilnas.github.io/portfolio/de/tags/"
+                />
+  </url><url>
+    <loc>https://akhilnas.github.io/portfolio/de/post/</loc>
+    <lastmod>2017-03-02T12:00:00-05:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://akhilnas.github.io/portfolio/post/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="de"
+                href="https://akhilnas.github.io/portfolio/de/post/"
+                />
+  </url><url>
     <loc>https://akhilnas.github.io/portfolio/de/categories/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -16,32 +71,18 @@
                 href="https://akhilnas.github.io/portfolio/de/categories/"
                 />
   </url><url>
-    <loc>https://akhilnas.github.io/portfolio/de/</loc>
+    <loc>https://akhilnas.github.io/portfolio/de/contact/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://akhilnas.github.io/portfolio/"
+                href="https://akhilnas.github.io/portfolio/contact/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="de"
-                href="https://akhilnas.github.io/portfolio/de/"
-                />
-  </url><url>
-    <loc>https://akhilnas.github.io/portfolio/de/tags/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://akhilnas.github.io/portfolio/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="de"
-                href="https://akhilnas.github.io/portfolio/de/tags/"
+                href="https://akhilnas.github.io/portfolio/de/contact/"
                 />
   </url>
 </urlset>
