@@ -13,9 +13,8 @@
       <pubDate>Wed, 11 Aug 2021 11:13:32 -0400</pubDate>
       
       <guid>https://akhilnas.github.io/portfolio/post/project-3/</guid>
-      <description>Inspiration Project Objective Baseline Human Level Performance Since this is a strucutred data we cannot easily establish a Human Level Pefromance Benchmark.
-Implementation Details Since this is a Kaggle Dataset
-Results Further Ideas References  (1): Photo by Beatriz Pérez Moya on Unsplash  </description>
+      <description>This Dataset is avavilable on Kaggle. The challenge was to help Santander identify which customers will make a specific transaction in the future, irrespective of the amount of money transacted. This is an anonymized dataset containing numeric feature variables, the binary target column, and a string ID_code column.
+Inspiration The power of AI is being realized by many industries across the spectrum of human activities. One major beneficiary of this revolution has been the financial industry with their vast troves of organized data.</description>
     </item>
     
   </channel>

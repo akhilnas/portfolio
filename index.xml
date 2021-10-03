@@ -39,7 +39,7 @@ Photo by Pietro Jeng on Unsplash</description>
       <pubDate>Fri, 10 Sep 2021 11:14:48 -0400</pubDate>
       
       <guid>https://akhilnas.github.io/portfolio/post/project-4/</guid>
-      <description></description>
+      <description>Github Repository</description>
     </item>
     
     <item>
@@ -48,9 +48,8 @@ Photo by Pietro Jeng on Unsplash</description>
       <pubDate>Wed, 11 Aug 2021 11:13:32 -0400</pubDate>
       
       <guid>https://akhilnas.github.io/portfolio/post/project-3/</guid>
-      <description>Inspiration Project Objective Baseline Human Level Performance Since this is a strucutred data we cannot easily establish a Human Level Pefromance Benchmark.
-Implementation Details Since this is a Kaggle Dataset
-Results Further Ideas References  (1): Photo by Beatriz Pérez Moya on Unsplash  </description>
+      <description>This Dataset is avavilable on Kaggle. The challenge was to help Santander identify which customers will make a specific transaction in the future, irrespective of the amount of money transacted. This is an anonymized dataset containing numeric feature variables, the binary target column, and a string ID_code column.
+Inspiration The power of AI is being realized by many industries across the spectrum of human activities. One major beneficiary of this revolution has been the financial industry with their vast troves of organized data.</description>
     </item>
     
     <item>
@@ -69,7 +68,7 @@ Results Further Ideas References  (1): Photo by Beatriz Pérez Moya on Unsplash 
       
       <guid>https://akhilnas.github.io/portfolio/post/project-1/</guid>
       <description>This work was completed as part of my Master Thesis for the Computational Science program at the Technical University of Munich.
-Motivation Implementation Results References  Image from Wikimedia Commons  </description>
+Motivation Deep Learning-based approaches have become very popular across many fields due to their versatility. A popular network configuration is the Autoencoder that essentially captures the latent space representation of higher dimensional functions. The Autoencoder consists of two neural networks that work in tandem to minimize an objective function. Sparse Grids also perform a similar function as an autoencoder but whereas in Neural Networks the underlying basis functions are non-linear and intractable, in sparse grids, this is not necessarily the case.</description>
     </item>
     
     <item>
@@ -78,8 +77,8 @@ Motivation Implementation Results References  Image from Wikimedia Commons  </de
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://akhilnas.github.io/portfolio/contact/</guid>
-      <description>This is an example of a custom shortcode that you can put right into your content. You will need to add a form action to the the shortcode to make it work. Check out Formspree for a simple, free form service.
-Your Name Email Address An email address is required.  Message   </description>
+      <description>My E-Mail address is eakhil.n@gmail.com
+You can also reach out to me on LinkedIn.</description>
     </item>
     
   </channel>

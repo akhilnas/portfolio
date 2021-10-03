@@ -36,7 +36,7 @@
 <meta itemprop="name" content="Project 3: Santander Customer Transaction Prediction">
 <meta itemprop="description" content="An end-to-end solution for predicting transaction decisions"><meta itemprop="datePublished" content="2021-08-11T11:13:32-04:00" />
 <meta itemprop="dateModified" content="2021-08-11T11:13:32-04:00" />
-<meta itemprop="wordCount" content="42">
+<meta itemprop="wordCount" content="552">
 <meta itemprop="keywords" content="Machine Learning,AWS:Sagemaker,MLOps," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Project 3: Santander Customer Transaction Prediction"/>
 <meta name="twitter:description" content="An end-to-end solution for predicting transaction decisions"/>
@@ -165,17 +165,33 @@
       
       
     </header>
-    <div class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><h2 id="inspiration">Inspiration</h2>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>This Dataset is avavilable on <a href="https://www.kaggle.com/c/santander-customer-transaction-prediction">Kaggle</a>. The challenge was to help Santander identify which customers will make a specific transaction in the future, irrespective of the amount of money transacted. This is an anonymized dataset containing numeric feature variables, the binary <em>target</em> column, and a string <em>ID_code</em> column.</p>
+<h2 id="inspiration">Inspiration</h2>
+<p>The power of AI is being realized by many industries across the spectrum of human activities. One major beneficiary of this revolution has been the financial industry with their vast troves of organized data.
+Many banks, however, have struggled to move from experimentation around select use cases to scaling AI technologies across the organization. Reasons include the lack of a clear strategy for AI, an inflexible and investment-starved technology core, fragmented data assets, and outmoded operating models that hamper collaboration between business and technology teams.</p>
+<p>AI technologies can lead to higher automation and, when deployed after controlling for risks, can often improve upon human decision making in terms of both speed and accuracy. The potential for value creation is one of the largest across industries, as AI can potentially unlock $1 trillion of incremental value for banks, annually⁽¹⁾.</p>
 <h2 id="project-objective">Project Objective</h2>
+<p>The objective is to develop a fully managed AI prediction service with the help of cloud services to determine transaction decisions. The AI model is to be built, trained and deployed in a fully automated pipeline with MLOps principles.</p>
 <h3 id="baseline-human-level-performance">Baseline Human Level Performance</h3>
 <p>Since this is a strucutred data we cannot easily establish a Human Level Pefromance Benchmark.</p>
 <h2 id="implementation-details">Implementation Details</h2>
-<p>Since this is a Kaggle Dataset</p>
+<p>The Preliminary Work was carried out in Kaggle Notebooks. This involves a EDA of the data, feature engineering and feature selection process were tried and tested in these notebooks.</p>
+<p>This project uses 10-fold cross validation with the XGBoost model trained on GPU to aim for high mean validation accuraccy. The hyperparameters were tuned with the help of Optuna library in Python using bayesian Search. This also allows us to understand the relative importance of different hyperparameters. And lastly I used the AutoML library H20.ai to get a really good stacked model endemble. This was the first iteration of the MLOps cycle.</p>
+<p>I have used the Area under the curve metric to determine the quality of the trained model.</p>
+<p>I then implemented the code in a more systematic manner in Python with logger libraries and the MLFlow framework and made the use of virtual environemnt to allow for the easy containerization of the application. Also, the prediction script file was finally added to gain new predicition results from the trained model. The MLflow framework allows the easy tracking of the many models that are tuned with the help of Optuna.</p>
+<p>I choose to implement a cloud-based solution to this problem in order to advantage of more powerful hardware and to build a more comprehensive service platform. I have built a CI/CD pipeline in line with MLOps ideas to fully automate the data acquisition, model building, training and deployment suign Endpoints. This was done with the help of Sagemaker Pipelines.</p>
+<p>All the code is available in the Github Repository. The main branch indicates the Docker based implementation while the
+Sagemaker branch containes files used in the implementation of the problem solution on AWS cloud services.</p>
+<p><a href="https://github.com/akhilnas/santander-customer-transaction">Github Repository</a></p>
 <h2 id="results">Results</h2>
 <h2 id="further-ideas">Further Ideas</h2>
+<ul>
+<li>Improve acuraccy further</li>
+</ul>
 <h2 id="references">References</h2>
 <ul>
-<li>(1): Photo by <a href="https://unsplash.com/@beatriz_perez?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Beatriz Pérez Moya</a> on <a href="https://unsplash.com/s/photos/accounting?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></li>
+<li>(1): <a href="https://www.mckinsey.com/industries/financial-services/our-insights/ai-bank-of-the-future-can-banks-meet-the-ai-challenge">McKinsey Report</a></li>
+<li>(2): Photo by <a href="https://unsplash.com/@beatriz_perez?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Beatriz Pérez Moya</a> on <a href="https://unsplash.com/s/photos/accounting?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></li>
 </ul>
 <ul class="pa0">
   
