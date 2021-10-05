@@ -36,7 +36,7 @@
 <meta itemprop="name" content="Project 2: Deep Learning with Chest Radiographs">
 <meta itemprop="description" content="An end-to-end solution for the detection of Pneumonia in Chest Radiographs"><meta itemprop="datePublished" content="2021-06-10T11:00:59-04:00" />
 <meta itemprop="dateModified" content="2021-06-10T11:00:59-04:00" />
-<meta itemprop="wordCount" content="323">
+<meta itemprop="wordCount" content="479">
 <meta itemprop="keywords" content="Medical,AWS,Flask,Transfer Learning," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Project 2: Deep Learning with Chest Radiographs"/>
 <meta name="twitter:description" content="An end-to-end solution for the detection of Pneumonia in Chest Radiographs"/>
@@ -172,15 +172,15 @@
 <p>The aim of this Project is to be able to build an Online Service wherein people can upload their Chest Radiographs and can get to know if they have Pneumonia or not.</p>
 <p>Since this is a Medical domain problem the importance of False Negatives cannot be underestimated. This is potentially more dangerous than False Positives.</p>
 <h3 id="baseline-human-level-performance">Baseline Human Level Performance</h3>
-<p>The Human Level Performace (HLP) is taken from the Article &ldquo;Comparison of Chest Radiograph Interpretations by Artificial Intelligence Algorithm vs Radiology Residents&rdquo;. The article states that</p>
+<p>The Human Level Performace (HLP) is taken from the Article &ldquo;Comparison of Chest Radiograph Interpretations by Artificial Intelligence Algorithm vs Radiology Residents&rdquo;. The article states that &ldquo;The trained AI algorithm achieved a mean AUC across labels of 0.807&rdquo; and &ldquo;The mean image-based sensitivity for AI algorithm was 0.716 (95% CI, 0.704-0.729) and for radiology residents was 0.720(95% CI, 0.709-0.732)&rdquo;. This gives us a baseline to try and achieve and overcome.</p>
 <h2 id="implementation-details">Implementation Details</h2>
 <p>The Project falls within the domain of Image Classification. In order to take advantage of a large expressive model to improve classification accuraccy while ast the same time not going through the whole process of trainign the model, I decide to use Transfer learning with the VGG16 model. This is a model trained on the ImageNet Dataset and achieved a very high top-5 test acuraccy.</p>
+<p>The code is implemented with the help of the PyTorch framework. I use Cross Entropy loss  and Stochastic Gradient Descent as the Optimizer. I modify the architecture of the VGG framewrok as we do not have 1000 classes but 2. Since the model was pre-trained, I train only for 10 epochs.</p>
+<p>The trained model is saved for the prediction service. I built a Web-based API  to interact with the predictor script with the help of the Flask framework in Python. The trained model along with the Flask scripts, the requirements file, the prdictor scripts and the necessary configuration files was packages and deployed with the help of Amazon Web Service - Elastic Beanstalk.</p>
 <p><a href="https://github.com/akhilnas/medical-chest-xray">Github Repository</a></p>
-<h2 id="results">Results</h2>
 <h2 id="further-ideas">Further Ideas</h2>
 <ul>
 <li>To work on improving the accuraccy of the Model especially in regards to lowering the False Negative Rate.</li>
-<li></li>
 <li>More User-friendly UI</li>
 </ul>
 <h2 id="references">References</h2>
