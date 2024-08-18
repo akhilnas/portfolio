@@ -5,8 +5,8 @@ import tailwind from '@astrojs/tailwind';
 
 // https://astro.build/config
 export default defineConfig({
-    site: 'https://akhilnas.github.io',
-    base: 'portfolio',
+    site: 'https://akhilnas.github.io/portfolio/',
+    base: '',
     integrations: [
         mdx(),
         sitemap(),
