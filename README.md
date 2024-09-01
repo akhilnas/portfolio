@@ -1,5 +1,11 @@
 # Dante - Astro & Tailwind CSS Theme by justgoodui.com
 
+## Acknowledgements
+
+I would like to thank the creator of the Stock website using Astro : **Asta Baukauske**. If you like the website and want to use ot for your own purpose please do not hesitate to check out the original [Github Repository](https://github.com/JustGoodUI/dante-astro-theme)
+
+## README from Original Repository
+
 Dante is a single-author blog and portfolio theme for Astro.js. Featuring a minimal, slick, responsive and content-focused design. For more Astro.js themes please check [justgoodui.com](https://justgoodui.com/).
 
 ![Dante Astro.js Theme](public/dante-preview.jpg)
