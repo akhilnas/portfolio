@@ -2,40 +2,47 @@
 title: About
 seo:
   title: About Me
-  description: Learn more about the person behind the website and embark on a journey of inspiration and shared experiences.
+  description: Learn more about the person behind this website
   image:
     src: '/about.jpeg'
     alt: A person sitting at a desk in front of a computer
 ---
 
-![Alt text for image](/portfolio/about.jpeg)
+![To be uploaded](/about.jpeg)
 
 ## Akhil Nasser - Full Stack Data Scientist based in Frankfurt
 
-**Greetings!** I'm Akhil Nasser, a passionate web developer residing in the picturesque landscapes of [Estonia](https://en.wikipedia.org/wiki/Estonia). With a keen eye for design and a love for crafting seamless digital experiences, I bring a unique blend of creativity and technical expertise to the world of web development.
+**Greetings!** I'm Akhil Nasser, a Full stack Data Scientist residing in the bustling Financial capital of Germany - [Frankfurt](https://en.wikipedia.org/wiki/Frankfurt). With a keen eye for details and a love for solving challenging problems, I bring a unique blend of creativity and technical expertise to the world of data science.
 
 ## Skills and Expertise
 
-I specialize in front-end and back-end development, utilizing the latest technologies to build responsive and user-friendly websites. My proficiency includes **HTML**, **CSS**, **JavaScript**, and frameworks such as **Astro.js** for dynamic and interactive user interfaces. On the server side, I'm well-versed in Node.js and have experience with database management systems like MongoDB.
+My primary area of focus for the last two years has been in natural language processing (NLP) and large language models (LLM). I utilize a vaiety of techniques drawn from Machine learning, deep learning or reinforcement learning librarires. I have experimented with time-series analysis and recommender systems during my free-time.
+
+I do not put an undue emphasis on the branch of the artifial intelligence tree the particular method belongs to but rather how good and efficient it is to solve the current problem in question.
+
+I also list out my technical skills using the following categories which are sorted based on how often I have used them.
+
+**Programming Languages:** Python, SQL, Julia, C/C++, J
+**Cloud Platform Services:** Amazon Web Services (AWS) - EC2, Sagemaker, Lambda, RDS, Elastic Beanstalk, Google Colab, Databricks
+
+I addition to these skills I am also a frequent user of Git and Excel, an occassional user of Tableau.
+
+My native language is Malayalam although I am native-level fluent in English having studied it thorough my schooling years. My German is at the A2 level.
 
 ## Innovation and Problem-Solving
 
-I thrive on solving complex problems and transforming ideas into functional, elegant websites. Whether it's optimizing performance, implementing new features, or troubleshooting issues, I approach each challenge with enthusiasm and a commitment to delivering high-quality solutions.
-
-## Global Perspective, Local Impact
-
-Living in Estonia has not only influenced my appreciation for nature and culture but has also shaped my approach to web development. I understand the importance of creating digital solutions that resonate with local audiences while maintaining a global perspective.
+I excel at tackling complex challenges and turning concepts into practical, effective solutions and products. Whether it's optimizing performance, implementing new features/functionality, or troubleshooting issues, I approach each challenge with enthusiasm and a commitment to delivering high-quality solutions.
 
 ## Continuous Learning
 
-The dynamic nature of the tech industry inspires me to stay up-to-date with the latest trends and advancements. I'm always eager to expand my skill set and embrace emerging technologies that enhance the functionality and aesthetics of the websites I create.
+The dynamic nature of the tech industry inspires me to stay up-to-date with the latest trends and advancements. I'm always eager to expand my skill set and embrace emerging technologies that reveal new solution pathways or inform us of new workflows for use in data science projects.
 
 ## Collaboration and Communication
 
-I believe in the power of collaboration and effective communication. Whether working with clients, designers, or fellow developers, I value clear communication to ensure the success of every project.
+I believe in the power of collaboration and effective communication. Whether working with stakeholders or team members, I value clear communication to ensure the success of every project.
 
 ## Get in Touch
 
-Are you looking to elevate your online presence or bring your digital ideas to life? I'd love to hear from you! Feel free to reach out for collaboration, consultation, or just a friendly chat about all things web development.
+Are you looking to add a valuable team player to your Data science team? I'd love to hear from you! Feel free to reach out for collaboration, consultation, or just a friendly chat about all things data science.
 
-_Let's build something amazing together!_
+_Let's build something amazing together! Cheers!_
