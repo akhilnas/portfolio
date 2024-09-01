@@ -28,7 +28,7 @@ I also list out my technical skills using the following categories which are sor
 
 I addition to these skills I am also a frequent user of Git and Excel, an occassional user of Tableau.
 
-My native language is Malayalam although I am native-level fluent in English having studied it thorough my schooling years. My German is at the A2 level.
+My native language is Malayalam although I am native-level fluent in English having studied it throughout my schooling years. My German is at the A2 level.
 
 ## Innovation and Problem-Solving
 
