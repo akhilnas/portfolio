@@ -16,9 +16,9 @@ seo:
 
 ## Skills and Expertise
 
-My primary area of focus for the last two years has been in natural language processing (NLP) and large language models (LLM). I utilize a vaiety of techniques drawn from Machine learning, deep learning or reinforcement learning librarires. I have experimented with time-series analysis and recommender systems during my free-time.
+My primary area of focus for the last two years has been in natural language processing (NLP) and large language models (LLM). I utilize a variety of techniques drawn from machine learning, deep learning and reinforcement learning libraries. I have experimented with time-series analysis and recommender systems during my free time.
 
-I do not put an undue emphasis on the branch of the artifial intelligence tree the particular method belongs to but rather how good and efficient it is to solve the current problem in question.
+I do not put an undue emphasis on the branch of the artificial intelligence tree the particular method belongs to but rather how good and efficient it is to solve the current problem in question.
 
 I also list out my technical skills using the following categories which are sorted based on how often I have used them.
 
@@ -26,7 +26,7 @@ I also list out my technical skills using the following categories which are sor
 
 **Cloud Platform Services:** Amazon Web Services (AWS) - EC2, Sagemaker, Lambda, RDS, Elastic Beanstalk, Google Colab, Databricks
 
-I addition to these skills I am also a frequent user of Git and Excel, an occassional user of Tableau.
+In addition to these skills I am also a frequent user of Git and Excel, an occasional user of Tableau.
 
 My native language is Malayalam although I am native-level fluent in English having studied it throughout my schooling years. My German is at the A2 level.
 
