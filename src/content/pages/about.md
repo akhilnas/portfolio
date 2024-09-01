@@ -23,6 +23,7 @@ I do not put an undue emphasis on the branch of the artifial intelligence tree t
 I also list out my technical skills using the following categories which are sorted based on how often I have used them.
 
 **Programming Languages:** Python, SQL, Julia, C/C++, J
+
 **Cloud Platform Services:** Amazon Web Services (AWS) - EC2, Sagemaker, Lambda, RDS, Elastic Beanstalk, Google Colab, Databricks
 
 I addition to these skills I am also a frequent user of Git and Excel, an occassional user of Tableau.
