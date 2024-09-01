@@ -5,10 +5,10 @@ publishDate: 'Aug 11 2021'
 isFeatured: true
 seo:
   image:
-    src: '/project-3.jpg'
+    src: '/portfolio/project-3.jpg'
 ---
 
-![Project preview](/project-3.jpg)
+![Project preview](/portfolio/project-3.jpg)
 
 ## Inspiration
 The power of AI is being realized by many industries across the spectrum of human activities. One major beneficiary of this revolution has been the financial industry with their vast troves of organized data. Many banks, however, have struggled to move from experimentation around select use cases to scaling AI technologies across the organization. Reasons include the lack of a clear strategy for AI, an inflexible and investment-starved technology core, fragmented data assets, and outmoded operating models that hamper collaboration between business and technology teams.

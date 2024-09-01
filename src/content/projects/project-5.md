@@ -5,10 +5,10 @@ publishDate: 'Oct 25 2023'
 isFeatured: true
 seo:
   image:
-    src: '/project-5.jpg'
+    src: '/portfolio/project-5.jpg'
 ---
 
-![Project preview](/project-5.jpg)
+![Project preview](/portfolio/project-5.jpg)
 
 
 **Project Overview:**

@@ -4,10 +4,10 @@ description: Leveraging advanced algorithms and machine learning, NeuralPlaylist
 publishDate: 'Sep 10 2021'
 seo:
   image:
-    src: '/project-4.jpg'
+    src: '/portfolio/project-4.jpg'
 ---
 
-![Project preview](/project-4.jpg)
+![Project preview](/portfolio/project-4.jpg)
 
 
 

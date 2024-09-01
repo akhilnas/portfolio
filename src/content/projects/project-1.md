@@ -4,11 +4,11 @@ description: EcoBuddy is a mobile app that gamifies sustainable living. Users ca
 publishDate: 'May 09 2021'
 seo:
   image:
-    src: '/project-1.jpg'
+    src: '/portfolio/project-1.jpg'
     alt: Project preview
 ---
 
-![Project preview](/project-1.jpg)
+![Project preview](/portfolio/project-1.jpg)
 
 **Note:** This project was completed as part of my Master Thesis for the Computational Science program at the Technical University of Munich.
 

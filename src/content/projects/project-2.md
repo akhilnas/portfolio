@@ -5,11 +5,11 @@ publishDate: 'Jun 10 2021'
 isFeatured: true
 seo:
   image:
-    src: '/project-2.jpg'
+    src: '/portfolio/project-2.jpg'
     alt: Project preview
 ---
 
-![Project preview](/project-2.jpg)
+![Project preview](/portfolio/project-2.jpg)
 
 ## Inspiration
 
