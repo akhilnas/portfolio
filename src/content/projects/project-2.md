@@ -2,7 +2,6 @@
 title: 'Pneumonia Detection from Chest Radiographs'
 description: A deep learning model that detects pneumonia from chest radiographs — built to help address the shortage of trained radiologists — and deployed behind a simple UI for use anywhere.
 publishDate: 'Jun 10 2021'
-isFeatured: true
 seo:
   image:
     src: '/portfolio/project-2.jpg'
