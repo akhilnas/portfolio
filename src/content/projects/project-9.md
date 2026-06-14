@@ -2,6 +2,7 @@
 title: 'Medical Literature Triage & Evidence Synthesis Agent'
 description: Built a production multi-agent system that continuously monitors PubMed, extracts structured PICO data using LLMs, generates semantic embeddings with PubMedBERT, and synthesises graded evidence summaries for clinicians — deployed on AWS ECS Fargate with full observability.
 publishDate: 'Mar 01 2026'
+isFeatured: true
 seo:
   image:
     src: '/portfolio/project-9.jpg'

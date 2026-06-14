@@ -1,6 +1,6 @@
 ---
 title: 'TransPredict: An AI Customer Transaction Predictor'
-description: RoboChef Recipe Assistant is a groundbreaking mobile application that leverages artificial intelligence to redefine the cooking experience.
+description: An end-to-end MLOps pipeline that predicts customer banking transactions on Santander's Kaggle dataset, using XGBoost with Optuna tuning and an H2O.ai stacked ensemble, automated and deployed via AWS SageMaker.
 publishDate: 'Aug 11 2021'
 isFeatured: true
 seo:
