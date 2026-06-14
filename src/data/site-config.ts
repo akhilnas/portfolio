@@ -93,7 +93,7 @@ const siteConfig: SiteConfig = {
         }
     ],
     hero: {
-        title: 'Hi There & Welcome to My Personal Homepage!',
+        title: 'Oh hey, you found my corner of the internet.',
         text: "I'm **Akhil Nasser**, a Data Scientist at Innoplexus, with comprehensive experience in managing the entire lifecycle of Data Science projects, with a strong focus on solution design and implementation. Feel free to explore some of my coding endeavors on <a href='https://github.com/akhilnas/'>GitHub</a>.",
         image: {
             src: '/portfolio/hero.jpeg',
