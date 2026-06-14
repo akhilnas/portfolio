@@ -84,3 +84,5 @@ The production stack runs on AWS, provisioned entirely via Terraform:
 The CI/CD pipeline is split across two repositories. The application repository builds and pushes Docker images to ECR on every merge to `main`. The infrastructure repository handles ECS deploys via a manual `workflow_dispatch` trigger, pulling any nominated image tag. GitHub Actions authenticates to AWS via OIDC — no long-lived credentials are stored as secrets.
 
 The live deployment is accessible at `https://medlit-demo.link`.
+
+> **Note:** In case the link is not available, the live deployment may have been taken down to optimise for costs. Please head over to my GitHub to watch the video of the demonstration instead.
