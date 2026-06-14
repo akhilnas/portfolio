@@ -103,130 +103,112 @@ out-of-memory* verdict is based on.
 
 | Symbol | Meaning |
 |---|---|
-| `P` | total model parameters |
-| `L` | number of transformer layers |
-| `t` | tensor-parallel degree (TP) |
-| `p` | pipeline-parallel degree (PP) |
-| `d` | data-parallel degree (DP) |
-| `b_q` | bytes per weight element, set by the **quantization** — FP32 = 4, BF16/FP16 = 2, FP8/INT8 = 1, INT4 = 0.5 |
-| `b_g` | bytes per gradient element |
-| `b_o` | bytes per parameter of optimizer state |
-| `b`, `s`, `h`, `a` | microbatch size, sequence length, hidden size, attention heads |
-| `m` | microbatches kept "in flight" by the pipeline |
+| $P$ | total model parameters |
+| $L$ | number of transformer layers |
+| $t$ | tensor-parallel degree (TP) |
+| $p$ | pipeline-parallel degree (PP) |
+| $d$ | data-parallel degree (DP) |
+| $b_q$ | bytes per weight element, set by the **quantization** — FP32 $=4$, BF16/FP16 $=2$, FP8/INT8 $=1$, INT4 $=0.5$ |
+| $b_g$ | bytes per gradient element |
+| $b_o$ | bytes per parameter of optimizer state |
+| $b,\,s,\,h,\,a$ | microbatch size, sequence length, hidden size, attention heads |
+| $m$ | microbatches kept "in flight" by the pipeline |
 
 ### 1. Cost of one parameter
 
 Three things scale with the parameter count: the **weights**, their **gradients**, and the
-**optimizer state**. With mixed-precision Adam the textbook per-parameter cost is:
+**optimizer state**. With mixed-precision Adam the optimizer keeps an fp32 master weight plus
+the two moment estimates, so
 
-```
-weights (compute copy)    b_q              bytes/param
-gradients                 b_g              bytes/param
-optimizer state (Adam):
-    fp32 master weight       4
-    1st moment  m            4
-    2nd moment  v            4
-    ----------------------------
-                 b_o    =   12              bytes/param
-```
+$$
+b_o = \underbrace{4}_{\text{fp32 master}} + \underbrace{4}_{\text{1st moment } m} + \underbrace{4}_{\text{2nd moment } v} = 12 \ \text{bytes/param},
+$$
 
-So the model-state cost per parameter is:
+and the model-state cost per parameter is
 
-```
-c_model = b_q + b_g + b_o
-```
+$$
+c_{\text{model}} = \underbrace{b_q}_{\text{weights}} + \underbrace{b_g}_{\text{gradients}} + \underbrace{b_o}_{\text{optimizer}}.
+$$
 
-In the common BF16 + Adam recipe (`b_q = 2`, `b_g = 2`, `b_o = 12`) that is the familiar
-**16 bytes/param**. Notice that dropping the weights to FP8 (`b_q = 1`) only trims the
-weight term — the 12-byte optimizer state, kept in fp32 for numerical stability, is what
-actually dominates a training run.
+In the common BF16 + Adam recipe ($b_q = 2$, $b_g = 2$, $b_o = 12$) that is the familiar
+**16 bytes/param**. Notice that dropping the weights to FP8 ($b_q = 1$) only trims the weight
+term — the 12-byte optimizer state, kept in fp32 for numerical stability, is what actually
+dominates a training run.
 
-**Weight-only quantization** is the special case `b_g = b_o = 0` (a frozen base model has no
-gradients and no optimizer slots). Then `c_model = b_q` alone — which is why a 4-bit frozen
-model is roughly **32×** lighter than the same model trained in fp32 Adam (`0.5` vs `16`).
+**Weight-only quantization** is the special case $b_g = b_o = 0$ (a frozen base model has no
+gradients and no optimizer slots). Then $c_{\text{model}} = b_q$ alone — which is why a 4-bit
+frozen model is roughly **32×** lighter than the same model trained in fp32 Adam
+($0.5$ vs $16$).
 
 ### 2. Sharding the model state — TP × PP
 
-Tensor parallelism splits every weight matrix across `t` GPUs; pipeline parallelism puts a
-different `1/p` slice of the layers on each stage. Together they partition the model state
-across a model-parallel group of `t · p` GPUs:
+Tensor parallelism splits every weight matrix across $t$ GPUs; pipeline parallelism puts a
+different $1/p$ slice of the layers on each stage. Together they partition the model state
+across a model-parallel group of $t \cdot p$ GPUs:
 
-```
-M_model / GPU  =   P · (b_q + b_g + b_o)
-                   ----------------------
-                          t · p
-```
+$$
+M_{\text{model}}^{\text{GPU}} = \frac{P \,(b_q + b_g + b_o)}{t \cdot p}.
+$$
 
 (The division is exact for the big matmul weights; small replicated tensors — LayerNorm
 scales, embeddings — add a few percent on top.)
 
 ### 3. The factor that's easy to miss — data parallelism
 
-Vanilla data parallelism **replicates** the whole model on each of the `d` replicas, so `d`
+Vanilla data parallelism **replicates** the whole model on each of the $d$ replicas, so $d$
 does *not* divide the per-GPU figure — it scales the cluster, not the chip. The exception is
 **ZeRO / FSDP**, which additionally shards the optimizer (stage 1), the gradients (stage 2),
-and even the weights (stage 3) across the `d` replicas. Each term that a given ZeRO stage
-shards picks up an extra `÷ d`:
+and even the weights (stage 3) across the $d$ replicas. Each term that a given ZeRO stage
+shards picks up an extra $\div\, d$:
 
-```
-M_model / GPU  =   P            ⎛  b_q          b_g          b_o      ⎞
-                 -------    ·   ⎜ -----   +   -----   +    -----      ⎟
-                  t · p         ⎝ [÷d s3]     [÷d s2]      [÷d s1]    ⎠
-```
+$$
+M_{\text{model}}^{\text{GPU}} = \frac{P}{t\,p}\left( \frac{b_q}{z_3} + \frac{b_g}{z_2} + \frac{b_o}{z_1} \right), \qquad z_i = \begin{cases} d & \text{ZeRO stage } i \text{ on} \\ 1 & \text{otherwise} \end{cases}
+$$
 
 ### 4. The other factor — activations
 
 Weights are only half the story. The forward pass stores activations for the backward pass,
 and at large batch or sequence length this term often **dominates**. Per transformer layer,
-per microbatch, the activation memory (Megatron's estimate, no recomputation) is roughly:
+per microbatch, the activation memory (Megatron's estimate, no recomputation) is roughly
 
-```
-A_layer  ≈  s · b · h · ( 34  +  5 · a · s / h )   bytes
-                                 \___________/
-                          attention score matrix (∝ s²)
-```
+$$
+A_{\text{layer}} \approx s\,b\,h\left( 34 + \underbrace{\frac{5\,a\,s}{h}}_{\text{attention scores } (\propto\, s^2)} \right) \ \text{bytes}.
+$$
 
 Activations partition *differently* from weights:
 
-- Pipeline parallelism leaves each stage only `L / p` layers      → factor `L / p`
-- Tensor parallelism splits the activations inside a layer         → `÷ t`
-- 1F1B scheduling keeps up to `m` microbatches alive on the busiest (first) stage so their
-  backward pass can run → `× m`, with `m ≈ p` in the worst case.
+- Pipeline parallelism leaves each stage only $L/p$ layers $\to$ factor $L/p$.
+- Tensor parallelism splits the activations inside a layer $\to \div\, t$.
+- 1F1B scheduling keeps up to $m$ microbatches alive on the busiest (first) stage so their
+  backward pass can run $\to \times\, m$, with $m \approx p$ in the worst case.
 
-```
-M_act / GPU  ≈   (L / p) · A_layer · m
-                 ---------------------
-                          t
-```
+$$
+M_{\text{act}}^{\text{GPU}} \approx \frac{(L/p)\,A_{\text{layer}}\,m}{t}.
+$$
 
 Gradient checkpointing (activation recomputation) trades compute for memory and collapses
-`A_layer` toward `s · b · h` per layer.
+$A_{\text{layer}}$ toward $s\,b\,h$ per layer.
 
 ### 5. Putting it together
 
-```
-M_GPU  =   P · (b_q + b_g + b_o)              ← weights · gradients · optimizer
-           ----------------------
-                  t · p
+$$
+M_{\text{GPU}} = \underbrace{\frac{P\,(b_q + b_g + b_o)}{t \cdot p}}_{\text{weights · gradients · optimizer}} \;+\; \underbrace{\frac{(L/p)\,A_{\text{layer}}\,m}{t}}_{\text{activations}} \;+\; \underbrace{M_{\text{overhead}}}_{\text{context, buffers, frag.}}
+$$
 
-         +  (L / p) · A_layer · m  /  t       ← activations
-
-         +  M_overhead                        ← CUDA context, comm buffers, fragmentation
-```
-
-That sum is exactly what the per-GPU VRAM bar stacks up, and the verdict is just `M_GPU`
-compared against the chosen chip's capacity.
+That sum is exactly what the per-GPU VRAM bar stacks up, and the verdict is just
+$M_{\text{GPU}}$ compared against the chosen chip's capacity.
 
 ### A worked example
 
-Llama-3 **70B** in BF16 + Adam → `c_model = 16` B/param → **1.12 TB** of model state in
-total.
+Llama-3 **70B** in BF16 + Adam → $c_{\text{model}} = 16$ B/param → **1.12 TB** of model state
+in total.
 
-- On a single 80 GB GPU: hopeless (1.12 TB ≫ 80 GB).
-- With **TP = 8, PP = 4** (`t · p = 32`): `1.12 TB / 32 ≈ 35 GB/GPU` of model state — now it
-  fits on an 80 GB chip, with the remaining ~45 GB left for activations, comm buffers, and
-  the inevitable fragmentation. That is the difference between a run that trains and one that
-  OOMs on step 1, and it's the trade-off the visualizer lets you feel by dragging a slider.
+- On a single 80 GB GPU: hopeless ($1.12\ \text{TB} \gg 80\ \text{GB}$).
+- With **TP $= 8$, PP $= 4$** ($t \cdot p = 32$): $1.12\ \text{TB} / 32 \approx 35\ \text{GB/GPU}$
+  of model state — now it fits on an 80 GB chip, with the remaining ~45 GB left for
+  activations, comm buffers, and the inevitable fragmentation. That is the difference between
+  a run that trains and one that OOMs on step 1, and it's the trade-off the visualizer lets
+  you feel by dragging a slider.
 
 ## Technology stack
 
