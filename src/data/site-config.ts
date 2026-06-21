@@ -85,7 +85,7 @@ const siteConfig: SiteConfig = {
         },
         {
             text: 'Medium',
-            href: 'https://instagram.com/'
+            href: 'https://medium.com/@eakhil711'
         },
         {
             text: 'X/Twitter',
