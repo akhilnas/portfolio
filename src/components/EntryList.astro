@@ -1,0 +1,25 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDate, url } from '../utils/content';
+
+type Props = { items: CollectionEntry<'blog' | 'projects'>[]; section: 'writing' | 'projects' };
+
+const { items, section } = Astro.props;
+---
+
+<ul class="entries">
+    {
+        items.map((item) => {
+            const summary = 'excerpt' in item.data ? item.data.excerpt : item.data.description;
+            return (
+                <li class="entry">
+                    <time datetime={item.data.publishDate.toISOString()}>{formatDate(item.data.publishDate)}</time>
+                    <h3>
+                        <a href={url(`${section}/${item.slug}`)}>{item.data.title}</a>
+                    </h3>
+                    {summary && <p>{summary}</p>}
+                </li>
+            );
+        })
+    }
+</ul>

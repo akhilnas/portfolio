@@ -1,0 +1,18 @@
+---
+import { getCollection } from 'astro:content';
+import EntryList from '../../components/EntryList.astro';
+import Squiggle from '../../components/Squiggle.astro';
+import Base from '../../layouts/Base.astro';
+import { sortItemsByDateDesc } from '../../utils/content';
+
+const projects = (await getCollection('projects')).sort(sortItemsByDateDesc);
+---
+
+<Base title="Projects" description="Things I've built: ML systems, research code and side projects.">
+    <header class="page-head">
+        <h1>Projects</h1>
+        <p class="lede">Things I've built, from physics simulations to ML systems.</p>
+        <Squiggle />
+    </header>
+    <EntryList items={projects} section="projects" />
+</Base>

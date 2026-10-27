@@ -1,0 +1,29 @@
+---
+import { type CollectionEntry, getCollection } from 'astro:content';
+import EntryList from '../../components/EntryList.astro';
+import Squiggle from '../../components/Squiggle.astro';
+import Base from '../../layouts/Base.astro';
+import { getAllTags, getPostsByTag, sortItemsByDateDesc, url } from '../../utils/content';
+
+export async function getStaticPaths() {
+    const posts = (await getCollection('blog')).sort(sortItemsByDateDesc);
+    return getAllTags(posts).map((tag) => ({
+        params: { tag: tag.slug },
+        props: { name: tag.name, posts: getPostsByTag(posts, tag.slug) }
+    }));
+}
+
+type Props = { name: string; posts: CollectionEntry<'blog'>[] };
+
+const { name, posts } = Astro.props;
+---
+
+<Base title={`#${name}`} description={`Posts tagged ${name}`}>
+    <header class="page-head">
+        <p class="muted small-caps">Tagged</p>
+        <h1>#{name}</h1>
+        <Squiggle />
+    </header>
+    <EntryList items={posts} section="writing" />
+    <p class="section"><a href={url('writing')}>← all writing</a></p>
+</Base>

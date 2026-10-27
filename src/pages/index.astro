@@ -1,47 +1,49 @@
 ---
 import { getCollection } from 'astro:content';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Button from '../components/Button.astro';
-import Hero from '../components/Hero.astro';
-import PostPreview from '../components/PostPreview.astro';
-import ProjectPreview from '../components/ProjectPreview.astro';
-import siteConfig from '../data/site-config';
-import { sortItemsByDateDesc } from '../utils/data-utils';
+import EntryList from '../components/EntryList.astro';
+import { site } from '../data/site';
+import Base from '../layouts/Base.astro';
+import { sortItemsByDateDesc, url } from '../utils/content';
 
 const posts = (await getCollection('blog')).sort(sortItemsByDateDesc);
-const featuredPosts = posts.filter(({ data }) => data.isFeatured);
-
 const projects = (await getCollection('projects')).sort(sortItemsByDateDesc);
-const featuredProjects = projects.filter(({ data }) => data.isFeatured);
-const base_url = import.meta.env.BASE_URL;
+
+const latest = (items: typeof posts | typeof projects, n: number) => {
+    const featured = items.filter((i) => i.data.isFeatured);
+    return (featured.length ? featured : items).slice(0, n);
+};
 ---
 
-<BaseLayout description={siteConfig.description} image={siteConfig.image}>
-    <Hero />
-    {
-        featuredProjects?.length > 0 && (
-            <div class="mb-16 sm:mb-24">
-                <h2 class="mb-12 text-xl font-serif italic sm:mb-16 sm:text-2xl">Projects</h2>
-                {featuredProjects.map((project) => (
-                    <ProjectPreview project={project} class="mb-10 sm:mb-12" headingLevel="h3" />
-                ))}
-                <div class="mt-12 sm:mt-16">
-                    <Button href={base_url + '/projects'}>View All Projects</Button>
-                </div>
-            </div>
-        )
-    }
-    {
-        featuredPosts?.length > 0 && (
-            <div class="mb-16 sm:mb-24">
-                <h2 class="mb-12 text-xl font-serif italic sm:mb-16 sm:text-2xl">Writing</h2>
-                {featuredPosts.map((post) => (
-                    <PostPreview post={post} class="mb-10 sm:mb-12" headingLevel="h3" />
-                ))}
-                <div class="mt-12 sm:mt-16">
-                    <Button href={base_url + '/blog'}>View All Posts</Button>
-                </div>
-            </div>
-        )
-    }
-</BaseLayout>
+<Base marginRule>
+    <section class="home-intro">
+        <h1>Hi, I'm Akhil.</h1>
+        <p>{site.intro}</p>
+        <ul class="socials">
+            {
+                site.socials.map((s) => (
+                    <li>
+                        <a href={s.href} rel="me noopener">
+                            {s.text}
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
+    </section>
+
+    <section class="section">
+        <div class="section-title">
+            <h2>Writing</h2>
+            <a href={url('writing')}>all {posts.length} posts →</a>
+        </div>
+        <EntryList items={posts.slice(0, 4)} section="writing" />
+    </section>
+
+    <section class="section">
+        <div class="section-title">
+            <h2>Projects</h2>
+            <a href={url('projects')}>all projects →</a>
+        </div>
+        <EntryList items={latest(projects, 3)} section="projects" />
+    </section>
+</Base>

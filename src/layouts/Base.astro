@@ -1,0 +1,99 @@
+---
+import 'katex/dist/katex.min.css';
+import '../styles/global.css';
+import Footer from '../components/Footer.astro';
+import Nav from '../components/Nav.astro';
+import { site } from '../data/site';
+import { url } from '../utils/content';
+
+export type Props = {
+    title?: string;
+    description?: string;
+    image?: { src: string; alt?: string };
+    pageType?: 'website' | 'article';
+    marginRule?: boolean;
+};
+
+const { description = site.description, image, pageType = 'website', marginRule = false } = Astro.props;
+const title = Astro.props.title ? `${Astro.props.title} · ${site.title}` : site.title;
+const canonical = new URL(Astro.url.pathname.replace(/\/?$/, '/'), Astro.site);
+const ogImage = image?.src ? new URL(image.src, Astro.site).toString() : undefined;
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <link rel="icon" type="image/svg+xml" href={`${url()}favicon.svg`} />
+        <link rel="sitemap" href={`${url()}sitemap-index.xml`} />
+        <link rel="alternate" type="application/rss+xml" href={`${url()}rss.xml`} title={site.title} />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=EB+Garamond:ital,wght@0,400..600;1,400..600&display=swap" rel="stylesheet" />
+
+        <meta property="og:type" content={pageType} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        {ogImage && <meta property="og:image" content={ogImage} />}
+        <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+
+        <script is:inline>
+            (() => {
+                let stored = null;
+                try {
+                    stored = localStorage.getItem('theme');
+                } catch {}
+                const dark = stored ? stored === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.classList.toggle('dark', dark);
+
+                // Notebook cover opens once per tab session
+                try {
+                    if (!sessionStorage.getItem('opened') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                        document.documentElement.classList.add('intro');
+                        sessionStorage.setItem('opened', '1');
+                    }
+                } catch {}
+                const closeCover = () => document.documentElement.classList.remove('intro');
+                document.addEventListener('animationend', (e) => e.target.classList?.contains('cover') && closeCover());
+
+                // Page turns: flip backwards on history back or when moving up a level
+                addEventListener('pagereveal', (e) => {
+                    const nav = window.navigation?.activation;
+                    if (!e.viewTransition?.types || !nav?.from?.url || !nav.entry?.url) return;
+                    const depth = (u) => new URL(u).pathname.split('/').filter(Boolean).length;
+                    const back = nav.navigationType === 'traverse' ? nav.entry.index < nav.from.index : depth(nav.entry.url) < depth(nav.from.url);
+                    if (back) e.viewTransition.types.add('back');
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (e.target.closest('.cover')) return closeCover();
+                    if (!e.target.closest('.theme-toggle')) return;
+                    const next = document.documentElement.classList.toggle('dark');
+                    try {
+                        localStorage.setItem('theme', next ? 'dark' : 'light');
+                    } catch {}
+                });
+            })();
+        </script>
+    </head>
+    <body>
+        <div class="cover" aria-hidden="true">
+            <div class="cover-label">
+                <span>{site.title}</span>
+                <small>notebook</small>
+            </div>
+        </div>
+        {marginRule && <div class="margin-rule" aria-hidden="true"></div>}
+        <Nav />
+        <main>
+            <slot />
+        </main>
+        <Footer />
+    </body>
+</html>

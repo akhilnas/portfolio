@@ -1,0 +1,66 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Squiggle from '../components/Squiggle.astro';
+import { formatDate, readingTime, url } from '../utils/content';
+import { slugify } from '../utils/slugify';
+import Base from './Base.astro';
+
+type Entry = CollectionEntry<'blog' | 'projects'>;
+type Props = { entry: Entry; section: 'writing' | 'projects'; prev?: Entry; next?: Entry };
+
+const { entry, section, prev, next } = Astro.props;
+const { title, publishDate, seo } = entry.data;
+const summary = 'excerpt' in entry.data ? entry.data.excerpt : entry.data.description;
+const tags = 'tags' in entry.data ? entry.data.tags : [];
+const updatedDate = 'updatedDate' in entry.data ? entry.data.updatedDate : undefined;
+---
+
+<Base title={seo?.title ?? title} description={seo?.description ?? summary} image={seo?.image} pageType="article">
+    <article>
+        <header class="page-head">
+            <div class="meta">
+                <span class="dot" aria-hidden="true"></span>
+                <time datetime={publishDate.toISOString()}>{formatDate(publishDate)}</time>
+                <span aria-hidden="true">·</span>
+                <span>{readingTime(entry.body)} min read</span>
+            </div>
+            <h1>{title}</h1>
+            {updatedDate && <p class="lede">Updated {formatDate(updatedDate)}</p>}
+            <Squiggle />
+        </header>
+        <div class="prose drop-cap">
+            <slot />
+        </div>
+        <footer class="article-foot">
+            {
+                tags.length > 0 && (
+                    <ul class="tags">
+                        {tags.map((tag) => (
+                            <li>
+                                <a href={url(`tags/${slugify(tag)}`)}>#{tag}</a>
+                            </li>
+                        ))}
+                    </ul>
+                )
+            }
+            {
+                (prev || next) && (
+                    <nav class="pager" aria-label="More">
+                        {prev && (
+                            <div>
+                                <span class="label muted small-caps">Older</span>
+                                <a href={url(`${section}/${prev.slug}`)}>{prev.data.title}</a>
+                            </div>
+                        )}
+                        {next && (
+                            <div class="next">
+                                <span class="label muted small-caps">Newer</span>
+                                <a href={url(`${section}/${next.slug}`)}>{next.data.title}</a>
+                            </div>
+                        )}
+                    </nav>
+                )
+            }
+        </footer>
+    </article>
+</Base>

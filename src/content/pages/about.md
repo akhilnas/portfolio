@@ -4,11 +4,11 @@ seo:
   title: About Me
   description: Learn more about the person behind this website
   image:
-    src: '/about.jpeg'
+    src: '/portfolio/about.jpeg'
     alt: A person sitting at a desk in front of a computer
 ---
 
-![To be uploaded](/about.jpeg)
+![To be uploaded](/portfolio/about.jpeg)
 
 ## Akhil Nasser - Full Stack Data Scientist based in Frankfurt
 

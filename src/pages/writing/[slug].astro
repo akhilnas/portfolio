@@ -1,0 +1,22 @@
+---
+import { type CollectionEntry, getCollection } from 'astro:content';
+import Article from '../../layouts/Article.astro';
+import { sortItemsByDateDesc } from '../../utils/content';
+
+export async function getStaticPaths() {
+    const posts = (await getCollection('blog')).sort(sortItemsByDateDesc);
+    return posts.map((entry, i) => ({
+        params: { slug: entry.slug },
+        props: { entry, next: posts[i - 1], prev: posts[i + 1] }
+    }));
+}
+
+type Props = { entry: CollectionEntry<'blog'>; prev?: CollectionEntry<'blog'>; next?: CollectionEntry<'blog'> };
+
+const { entry, prev, next } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<Article entry={entry} section="writing" prev={prev} next={next}>
+    <Content />
+</Article>

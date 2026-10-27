@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+import EntryList from '../../components/EntryList.astro';
+import Squiggle from '../../components/Squiggle.astro';
+import Base from '../../layouts/Base.astro';
+import { getAllTags, sortItemsByDateDesc, url } from '../../utils/content';
+
+const posts = (await getCollection('blog')).sort(sortItemsByDateDesc);
+const years = [...new Set(posts.map((p) => p.data.publishDate.getUTCFullYear()))];
+const tags = getAllTags(posts);
+---
+
+<Base title="Writing" description="Essays and notes on machine learning, LLMs and data science.">
+    <header class="page-head">
+        <h1>Writing</h1>
+        <p class="lede">Essays and notes, mostly on machine learning.</p>
+        <Squiggle />
+    </header>
+    {
+        years.map((year) => (
+            <section>
+                <h2 class="year">{year}</h2>
+                <EntryList items={posts.filter((p) => p.data.publishDate.getUTCFullYear() === year)} section="writing" />
+            </section>
+        ))
+    }
+    <section class="section">
+        <h2 class="year">Topics</h2>
+        <ul class="tags">
+            {
+                tags.map((t) => (
+                    <li>
+                        <a href={url(`tags/${t.slug}`)}>#{t.name}</a>
+                    </li>
+                ))
+            }
+        </ul>
+    </section>
+</Base>

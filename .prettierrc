@@ -5,10 +5,17 @@
     "tabWidth": 4,
     "overrides": [
         {
-            "files": ["*.md", "*.mdx", "*.yaml"],
+            "files": [
+                "*.md",
+                "*.mdx",
+                "*.yaml"
+            ],
             "options": {
                 "tabWidth": 2
             }
         }
+    ],
+    "plugins": [
+        "prettier-plugin-astro"
     ]
 }
