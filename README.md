@@ -9,6 +9,7 @@ npm run preview
 ```
 
 - Content: `src/content/{blog,projects,pages}` (Markdown, KaTeX math supported)
+- In posts, `<aside class="note">…</aside>` makes a handwritten margin note and `<mark>…</mark>` a highlighter stroke
 - Site text, nav and social links: `src/data/site.ts`
 - All styling: `src/styles/global.css` (CSS variables at the top; dark mode under `html.dark`)
 - The only JS shipped is the inline script in `src/layouts/Base.astro` (theme toggle, notebook-cover intro, page-turn direction)

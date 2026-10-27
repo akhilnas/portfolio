@@ -28,7 +28,7 @@ const updatedDate = 'updatedDate' in entry.data ? entry.data.updatedDate : undef
             {updatedDate && <p class="lede">Updated {formatDate(updatedDate)}</p>}
             <Squiggle />
         </header>
-        <div class="prose drop-cap">
+        <div class="prose drop-cap ruled">
             <slot />
         </div>
         <footer class="article-foot">

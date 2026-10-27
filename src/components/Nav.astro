@@ -31,3 +31,14 @@ const isCurrent = (href: string) => path.startsWith(url(href));
         </ul>
     </nav>
 </header>
+
+<!-- Section divider tabs on the right edge; replace .nav-links on wide screens -->
+<nav class="tabs" aria-label="Sections">
+    {
+        site.nav.map((item) => (
+            <a href={url(item.href)} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+                {item.text}
+            </a>
+        ))
+    }
+</nav>
