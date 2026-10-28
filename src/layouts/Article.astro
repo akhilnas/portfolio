@@ -16,6 +16,7 @@ const updatedDate = 'updatedDate' in entry.data ? entry.data.updatedDate : undef
 ---
 
 <Base title={seo?.title ?? title} description={seo?.description ?? summary} image={seo?.image} pageType="article">
+    <div class="ribbon" aria-hidden="true"></div>
     <article>
         <header class="page-head">
             <div class="meta">
@@ -64,3 +65,21 @@ const updatedDate = 'updatedDate' in entry.data ? entry.data.updatedDate : undef
         </footer>
     </article>
 </Base>
+
+<script>
+    // Bookmark ribbon grows with reading progress
+    const ribbon = document.querySelector<HTMLElement>('.ribbon');
+    let queued = false;
+    const update = () => {
+        queued = false;
+        const max = document.documentElement.scrollHeight - innerHeight;
+        ribbon?.style.setProperty('--read', String(max > 0 ? Math.min(1, scrollY / max) : 1));
+    };
+    const queue = () => {
+        if (!queued) requestAnimationFrame(update);
+        queued = true;
+    };
+    addEventListener('scroll', queue, { passive: true });
+    addEventListener('resize', queue);
+    update();
+</script>

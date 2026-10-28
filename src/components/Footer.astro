@@ -1,7 +1,9 @@
 ---
 import { site } from '../data/site';
-import { url } from '../utils/content';
+import { pageNumber, url } from '../utils/content';
 import Squiggle from './Squiggle.astro';
+
+const page = await pageNumber(Astro.url.pathname);
 ---
 
 <footer class="footer">
@@ -20,4 +22,5 @@ import Squiggle from './Squiggle.astro';
         <li><a href={`${url()}rss.xml`}>RSS</a></li>
     </ul>
     <p class="small-caps">© {new Date().getFullYear()} {site.author}</p>
+    {page && <span class="page-number" aria-label={`Page ${page}`}>{page}</span>}
 </footer>

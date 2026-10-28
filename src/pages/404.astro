@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';
+import { url } from '../utils/content';
+---
+
+<Base title="Page not found">
+    <div class="torn-page">
+        <p class="torn-scribble">this page was ripped out</p>
+        <p class="torn-note">Whatever was written here is gone. Only the stub along the binding is left.</p>
+        <a class="button" href={url()}>Back to the first page</a>
+    </div>
+</Base>
