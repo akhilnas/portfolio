@@ -1,0 +1,33 @@
+---
+import { getCollection } from 'astro:content';
+import Squiggle from '../../components/Squiggle.astro';
+import Base from '../../layouts/Base.astro';
+import { formatDate } from '../../utils/content';
+
+const links = (await getCollection('links')).sort((a, b) => b.data.savedDate.getTime() - a.data.savedDate.getTime());
+---
+
+<Base title="Clippings" description="Articles by other people that I found worth reading.">
+    <header class="page-head">
+        <h1>Clippings</h1>
+        <p class="lede">Other people's writing I found worth keeping.</p>
+        <Squiggle />
+    </header>
+    <ul class="entries">
+        {
+            links.map(({ data }) => (
+                <li class="entry clipping">
+                    <time datetime={data.savedDate.toISOString()}>{formatDate(data.savedDate)}</time>
+                    <h3>
+                        <a href={data.url} target="_blank" rel="noopener">
+                            {data.title}
+                            <span class="external" aria-label="(opens in a new tab)">↗</span>
+                        </a>
+                    </h3>
+                    {(data.author || data.source) && <p class="byline">{[data.author, data.source].filter(Boolean).join(' · ')}</p>}
+                    {data.note && <p class="margin-note">{data.note}</p>}
+                </li>
+            ))
+        }
+    </ul>
+</Base>

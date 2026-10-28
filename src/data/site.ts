@@ -7,7 +7,8 @@ export const site = {
     nav: [
         { text: 'Projects', href: 'projects' },
         { text: 'Writing', href: 'writing' },
-        { text: 'About', href: 'about' }
+        { text: 'About', href: 'about' },
+        { text: 'Clippings', href: 'clippings' }
     ],
     // TODO: GitHub and X links in the old site-config pointed at placeholders (dribbble.com, x.com)
     socials: [

@@ -428,6 +428,23 @@ html.dark .theme-toggle .sun {
     overflow: hidden;
 }
 
+.clipping .external {
+    font-size: 0.7em;
+    margin-left: 0.2em;
+    color: var(--text-soft);
+}
+.clipping .byline {
+    font-style: normal;
+}
+.clipping .margin-note {
+    margin-top: 0.4rem;
+    font-family: var(--font-hand);
+    font-style: normal;
+    font-size: 1.3rem;
+    color: var(--red);
+    -webkit-line-clamp: unset;
+}
+
 .year {
     margin: 2.5rem 0 0;
     font-size: 1.5rem;
