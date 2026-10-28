@@ -1,0 +1,21 @@
+---
+// The agent workflow behind the textbook, drawn as numbered cards joined by pen arrows.
+const steps = [
+    { title: 'The brief', body: 'Who the reader is (high-school maths, one calculus course) and everything they must not be assumed to know.' },
+    { title: 'Shared vocabulary', body: 'About fifty fixed concept slugs, so separate agents don’t write “covariance-matrix” and “cov-matrix” twice.' },
+    { title: 'Chapter agents', body: 'Write each chapter with widgets, wrap unfamiliar terms in links, and list every concept they referenced.' },
+    { title: 'Concept agents', body: 'Write one card per listed concept, linking onward to other cards. Type-checked before anything merges.' }
+];
+---
+
+<ol class="pipeline">
+    {
+        steps.map((s, i) => (
+            <li>
+                <span class="step-no">{i + 1}</span>
+                <strong>{s.title}</strong>
+                <span>{s.body}</span>
+            </li>
+        ))
+    }
+</ol>

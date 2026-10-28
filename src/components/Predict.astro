@@ -1,0 +1,10 @@
+---
+// Predict-then-check: the question is the summary, the answer only shows once opened.
+type Props = { question: string; hint?: string };
+const { question, hint = 'make a guess, then open' } = Astro.props;
+---
+
+<details class="predict">
+    <summary>{question}<small>{hint}</small></summary>
+    <slot />
+</details>

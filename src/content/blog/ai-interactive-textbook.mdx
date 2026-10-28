@@ -1,0 +1,119 @@
+---
+title: 'A Textbook That Explains Itself'
+excerpt: What happens when AI agents turn a dense machine-learning textbook into something you can poke at, and why the same trick could change how we read research papers.
+publishDate: '2026-05-13'
+isFeatured: true
+tags:
+  - Machine Learning
+  - AI
+  - Gaussian Processes
+  - Interactive
+seo:
+  image:
+    src: '/portfolio/gp-interactive.png'
+    alt: A Gaussian process posterior drawn in ink on notebook paper, with red data points and a shaded uncertainty band
+---
+
+import { ConceptLink, CitationLink } from '../../components/gp/tooltip';
+import PriorSamples from '../../components/gp/widgets/PriorSamples';
+import PriorToPosterior from '../../components/gp/widgets/PriorToPosterior';
+import EquivalentKernel from '../../components/gp/widgets/EquivalentKernel';
+import Predict from '../../components/Predict.astro';
+import Deeper from '../../components/Deeper.astro';
+import Pipeline from '../../components/Pipeline.astro';
+
+Reading a good textbook as a newcomer is mostly a matter of digging. Every sentence leans on five ideas you were supposed to pick up somewhere else, and each of those leans on five more. The reading itself isn't the slow part. The slow part is the detours.
+
+So I tried an experiment. I gave a team of AI agents a classic, Rasmussen and Williams' _Gaussian Processes for Machine Learning_, and asked them to make it explain itself: every unfamiliar term opens its own explanation, those explanations open further ones, and the key ideas come with widgets that compute the real thing rather than playing a canned animation. Below is one chapter's worth of that, rewritten in miniature, followed by what I think is the more interesting part: the same idea applied to research papers.
+
+<aside class="note">
+  Hover a dotted term to peek. Hold it (or tap it) to pin the card, then keep going inside it. <kbd>Esc</kbd> closes the whole chain.
+</aside>
+
+## Part one: Gaussian processes, by hand
+
+### A function is just a very long vector
+
+Suppose you want to learn an unknown function from a handful of noisy measurements. A <ConceptLink client:visible slug="gaussian-process" /> takes an unusual route: instead of picking a formula and fitting its parameters, it puts a <ConceptLink client:visible slug="probability-distribution">probability distribution</ConceptLink> directly over functions.
+
+That sounds impossible until you notice that you only ever look at a function at finitely many points. Pick any inputs $x_1, \dots, x_n$, and a Gaussian process says the values $f(x_1), \dots, f(x_n)$ follow a <ConceptLink client:visible slug="multivariate-gaussian-distribution" />. Everything about the process lives in one ingredient, the <ConceptLink client:visible slug="covariance-function" />, which says how strongly the outputs at two inputs move together. The usual default is the <ConceptLink client:visible slug="squared-exponential-kernel" />:
+
+$$
+k(x, x') = \sigma_f^2 \exp\!\left(-\frac{(x - x')^2}{2\ell^2}\right)
+$$
+
+Nearby inputs get highly correlated outputs and distant ones become independent. The <ConceptLink client:visible slug="length-scale" /> $\ell$ decides what counts as "nearby", and the <ConceptLink client:visible slug="signal-variance" /> $\sigma_f^2$ sets how far the function typically strays from zero.
+
+<Predict question="Before you touch the sliders: what happens to the curves as ℓ gets very small? And very large?">
+  As $\ell$ shrinks, even neighbouring inputs stop being correlated, so the curves turn into jagged noise. As it grows, every input is correlated with every other one and the curves flatten into gentle, almost straight lines. $\sigma_f^2$ never changes the shape. It only stretches everything vertically.
+</Predict>
+
+<PriorSamples client:visible />
+
+These are draws from the _prior_: what the model believes before it has seen any data. The two sliders are <ConceptLink client:visible slug="hyperparameter">hyperparameters</ConceptLink>, knobs on the distribution over functions rather than on any single function.
+
+### Data arrives
+
+Now show it some data. Mathematically this is nothing more than <ConceptLink client:visible slug="conditional-probability">conditioning</ConceptLink> a big Gaussian on the coordinates you've observed, and conditioning a Gaussian gives you another Gaussian. Its mean and covariance at a new input $x_*$ come out in closed form:
+
+$$
+\bar f_* = \mathbf{k}_*^\top (K + \sigma_n^2 I)^{-1}\mathbf{y}, \qquad \mathbb{V}[f_*] = k(x_*, x_*) - \mathbf{k}_*^\top (K + \sigma_n^2 I)^{-1}\mathbf{k}_*
+$$
+
+Here $K$ is the <ConceptLink client:visible slug="covariance-matrix" /> between the training inputs and $\mathbf{k}_*$ holds the covariances between them and $x_*$. The result is the <ConceptLink client:visible slug="posterior-distribution" />. Every click below makes the page factorise $K + \sigma_n^2 I$ with a fresh <ConceptLink client:visible slug="cholesky-decomposition" /> and redraw.
+
+<PriorToPosterior client:visible />
+
+<Predict question="Click two points at almost the same x but at very different heights. What does the mean do? Now drag ℓ down to its minimum.">
+  With the default length-scale the function isn't allowed to change that quickly, so the mean splits the difference: it passes roughly halfway between the two points and treats the gap as noise. Shrink $\ell$ and the GP is suddenly allowed to swing hard, so the mean goes through both points instead. Same data, different beliefs about smoothness, different conclusions.
+</Predict>
+
+Also notice the band. It pinches to almost nothing at each observation (the noise is small) and opens back up to the prior's width once you're a couple of length-scales away. The model knows where it has no idea.
+
+### What is the prediction actually doing?
+
+Look at the formula for $\bar f_*$ again. It's linear in $\mathbf{y}$: the prediction is just a weighted sum of the observed targets, which makes a GP a <ConceptLink client:visible slug="linear-smoother" />. The weights, as a function of where each training point sits, form the <ConceptLink client:visible slug="equivalent-kernel" />.
+
+<EquivalentKernel client:visible />
+
+<Deeper title="why do the weights dip below zero?">
+  With little noise the GP tries to pass close to every observation, and the cleanest way to do that is to take a little away from the neighbours of the point it's predicting at. That's the negative sidelobes. Turn the noise up and it stops chasing individual points: the weight function widens, the dips fade, and it behaves like an ordinary weighted average with a wide window. Adding more points has the opposite effect, because a crowd of nearby observations lets it average locally.
+</Deeper>
+
+That's the core of GP regression. Everything after this in the textbook (choosing the kernel, learning $\ell$ and $\sigma_f$ by maximising the <ConceptLink client:visible slug="marginal-likelihood" />, approximations for big data) builds on these three pictures.
+
+## Part two: the same trick, for papers
+
+Textbooks are the friendly case. Research papers are where the digging really hurts. A paper cites a dozen others for its key moves, those cite a dozen more, and the honest way to understand one is an afternoon of open tabs.
+
+The nested cards above don't care whether they're explaining a concept or a citation. So here's a paragraph written the way a paper's related-work section would be, except that each citation opens a card: what the cited paper did, why it matters here, and what _it_ cites in turn. Red markers are papers and ink terms are concepts, and they mix freely in one chain.
+
+<div class="paper-excerpt">
+  <span class="label">A related-work paragraph, made explorable</span>
+  <p>
+    Deep kernel learning <CitationLink client:visible id="dkl">[1]</CitationLink> replaces a hand-chosen covariance function with a neural network feeding into a spectral mixture base kernel <CitationLink client:visible id="sm">[2]</CitationLink>, trained end to end through the marginal likelihood. Learning a kernel's features with a deep model goes back to deep belief net kernels <CitationLink client:visible id="dbngp">[3]</CitationLink>. What makes it practical at scale is KISS-GP <CitationLink client:visible id="kissgp">[4]</CitationLink>, which recasts inducing-point approximations <CitationLink client:visible id="unify">[5]</CitationLink>, <CitationLink client:visible id="spgp">[6]</CitationLink> as interpolation on a grid. All of them assume the basics in <CitationLink client:visible id="gpml">[7]</CitationLink>.
+  </p>
+</div>
+
+Try opening [1], then KISS-GP from inside it, then the pseudo-inputs paper from inside that. Three papers deep, you know why the first one works, and you haven't left the paragraph.
+
+Only the paragraph is mine. The cards stick to the citation graph: every "builds on" link is a reference that really appears in that paper's bibliography, and I checked each one against Semantic Scholar's reference data. That constraint matters. Summaries are where a language model will happily invent a plausible connection, so the graph has to come from data, not from the model.
+
+### Where this goes
+
+The cards here were written by hand from verified sources. The version I'd actually like to use works like this: an agent takes a paper's reference list from Semantic Scholar or arXiv, reads the cited abstracts and the sentences that cite them, and writes each card when you first open it. Cards get cached, so the next reader of a popular paper gets them instantly. Nothing about the interface changes. It's the same chain of cards, just with a much bigger graph behind it. This is the direction I'm heading in, not a working feature yet.
+
+## How the textbook was built
+
+The full adaptation (two chapters so far, about a hundred concept cards) came out of a small multi-agent pipeline. The part that made it work wasn't clever prompting. It was boring coordination:
+
+<Pipeline />
+
+A few things I learned along the way:
+
+- **Name the reader precisely.** "A first-year student with one calculus course" produced far better cards than "a beginner". It also gave the agents a rule for _when_ to link a term: always, on every clear occurrence, because re-hovering something you forgot is the whole point.
+- **Fix the vocabulary up front.** Without a shared list of slugs, parallel agents happily invented near-duplicates and the chains fragmented.
+- **Make the widgets do real maths.** Every plot on this page solves the actual linear system in your browser. Agents are good at writing that code, and a widget that is secretly a canned animation teaches you nothing when you push it somewhere unexpected.
+- **Keep the book's words the book's.** This page is my own short retelling. The cards and widgets are what AI made cheap to produce. The original text is still the best place to learn it properly.
+
+_Gaussian Processes for Machine Learning_ is free to read at [gaussianprocess.org/gpml](https://gaussianprocess.org/gpml/). Read it with this page open next to it.

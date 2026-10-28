@@ -647,6 +647,369 @@ mark {
     }
 }
 
+/* ---------- Interactive GP pieces (src/components/gp) ---------- */
+/* Index card taped into the page; its own background covers the ruled lines */
+.widget {
+    position: relative;
+    margin: 2.25rem 0;
+    padding: 1.4rem 1.25rem 1.1rem;
+    background: var(--paper-muted);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    box-shadow: 0 10px 24px -18px rgb(0 0 0 / 0.45);
+    font-size: 1.05rem;
+    line-height: 1.5;
+}
+.widget::before {
+    content: '';
+    position: absolute;
+    top: -0.7rem;
+    left: 50%;
+    width: 5.5rem;
+    height: 1.4rem;
+    translate: -50% 0;
+    rotate: -2deg;
+    background: color-mix(in srgb, var(--mustard) 28%, transparent);
+    border-left: 1px dashed color-mix(in srgb, var(--mustard) 40%, transparent);
+    border-right: 1px dashed color-mix(in srgb, var(--mustard) 40%, transparent);
+}
+@media (prefers-reduced-motion: no-preference) {
+    .widget {
+        rotate: -0.4deg;
+    }
+    .widget:nth-of-type(even) {
+        rotate: 0.35deg;
+    }
+}
+.widget p {
+    margin: 0 0 0.6rem;
+}
+.widget-title {
+    font-family: var(--font-hand);
+    font-size: 1.6rem;
+    color: var(--ink);
+    line-height: 1.1;
+}
+.widget-desc {
+    color: var(--text-soft);
+    font-style: italic;
+}
+.slider-row {
+    display: grid;
+    gap: 0 1.5rem;
+}
+@media (min-width: 34rem) {
+    .slider-row {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+.slider {
+    margin-bottom: 0.5rem;
+}
+.slider label {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 1rem;
+}
+.slider output {
+    font-variant-numeric: tabular-nums;
+    color: var(--text-soft);
+}
+.slider input {
+    width: 100%;
+    accent-color: var(--ink);
+}
+.widget-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    margin-top: 0.4rem;
+}
+.widget-actions .muted {
+    margin-right: auto;
+}
+.widget button {
+    font-family: var(--font-hand);
+    font-size: 1.15rem;
+    color: var(--ink);
+    background: none;
+    border: 1.5px solid var(--ink);
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    padding: 0.05rem 0.8rem;
+    cursor: pointer;
+}
+.widget button:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+.plot {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+.plot .axis {
+    stroke: var(--rule);
+    stroke-width: 1.5;
+}
+.plot-label {
+    font-family: var(--font-hand);
+    font-size: 13px;
+    fill: var(--text-soft);
+}
+.plot-hit {
+    cursor: crosshair;
+}
+.data-dot {
+    fill: var(--red);
+    stroke: var(--paper-muted);
+    stroke-width: 1.5;
+}
+
+/* Predict-then-check: guess before you drag, then open the answer */
+.predict {
+    margin: 0 0 1.35rem;
+    padding: 0.6rem 1rem;
+    border: 1.5px dashed color-mix(in srgb, var(--green) 70%, transparent);
+    border-radius: 6px;
+    background: var(--paper);
+}
+.predict summary {
+    cursor: pointer;
+    font-family: var(--font-hand);
+    font-size: 1.35rem;
+    color: var(--green);
+    line-height: 1.3;
+}
+.predict summary small {
+    display: block;
+    font-size: 1rem;
+    color: var(--text-soft);
+}
+.predict[open] summary {
+    margin-bottom: 0.5rem;
+}
+.predict p:last-child {
+    margin-bottom: 0;
+}
+
+/* Deeper reading tucked behind a click */
+.deeper {
+    margin: 0 0 1.35rem;
+    padding: 0.5rem 1rem;
+    border-left: 3px solid var(--mustard);
+    background: var(--paper);
+}
+.deeper summary {
+    cursor: pointer;
+    font-family: var(--font-hand);
+    font-size: 1.3rem;
+    color: var(--mustard);
+}
+.deeper p:last-child {
+    margin-bottom: 0;
+}
+
+/* Terms and citations that open nested cards */
+.chain-link {
+    cursor: help;
+    color: var(--ink);
+    border-bottom: 1.5px dotted var(--ink);
+    border-radius: 2px;
+}
+.chain-link:hover,
+.chain-link[aria-expanded='true'] {
+    background: var(--highlight);
+}
+.chain-link.paper {
+    font-variant-numeric: tabular-nums;
+    border-bottom-color: var(--red);
+    color: var(--red);
+}
+.chain-circular {
+    color: var(--text-soft);
+    font-style: italic;
+}
+.chain-card {
+    width: max-content;
+    max-width: 24rem;
+    background: var(--paper);
+    color: var(--text);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    box-shadow: 0 14px 30px -16px rgb(0 0 0 / 0.5);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.5;
+    text-align: left;
+    overflow: hidden;
+}
+.chain-card.locked {
+    border-color: var(--ink);
+}
+.chain-card.paper.locked {
+    border-color: var(--red);
+}
+.chain-progress {
+    height: 2px;
+    background: var(--ink);
+}
+.chain-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.45rem 0.85rem 0.2rem;
+}
+.chain-title {
+    font-family: var(--font-hand);
+    font-size: 1.3rem;
+    line-height: 1.15;
+    color: var(--ink);
+}
+.chain-card.paper .chain-title {
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+.chain-pin {
+    flex: none;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.4);
+}
+.chain-byline {
+    margin: 0;
+    padding: 0 0.85rem;
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--text-soft);
+}
+.chain-body {
+    max-height: 20rem;
+    overflow-y: auto;
+    padding: 0.35rem 0.85rem 0.7rem;
+}
+.chain-body .stack > * + * {
+    margin-top: 0.55rem;
+}
+.chain-body p {
+    margin: 0;
+}
+.chain-body .widget {
+    margin: 0.9rem 0 0.2rem;
+    padding: 0.8rem;
+    rotate: none;
+    font-size: 0.95rem;
+}
+.chain-body .widget::before {
+    display: none;
+}
+.chain-body .widget-title {
+    font-size: 1.25rem;
+}
+.chain-body .block-math {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+.chain-body .aside {
+    font-size: 0.92rem;
+}
+.chain-body .accent {
+    font-weight: 600;
+    color: var(--ink);
+}
+.chain-body .center-svg {
+    display: block;
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+}
+.card-label {
+    font-variant: all-small-caps;
+    letter-spacing: 0.05em;
+    color: var(--text-soft);
+}
+.chain-source {
+    display: inline-block;
+    margin-top: 0.55rem;
+    font-size: 0.95rem;
+}
+
+/* A paragraph typeset like a paper, for the citation demo */
+.paper-excerpt {
+    margin: 1.5rem 0 2rem;
+    padding: 1.25rem 1.4rem;
+    background: var(--paper-muted);
+    border: 1px solid var(--rule);
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+.paper-excerpt .label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-variant: all-small-caps;
+    letter-spacing: 0.06em;
+    color: var(--text-soft);
+}
+.paper-excerpt p {
+    margin: 0;
+    text-align: justify;
+    hyphens: auto;
+}
+
+.prose .pipeline {
+    display: grid;
+    gap: 1.6rem;
+    margin: 1.75rem 0 2.25rem;
+    padding: 0;
+    list-style: none;
+}
+/* Beats the ruled-paper rule for lists, so the cards sit on plain paper */
+.prose.ruled > .pipeline {
+    margin-bottom: 2.25rem;
+    padding-bottom: 0;
+    background: none;
+}
+.pipeline li {
+    position: relative;
+    margin: 0;
+    padding: 0.8rem 0.85rem 0.9rem;
+    border: 1.5px solid var(--ink);
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    background: var(--paper);
+    font-size: 1.05rem;
+    line-height: 1.4;
+    color: var(--text-soft);
+}
+.pipeline strong {
+    display: block;
+    font-family: var(--font-hand);
+    font-weight: 400;
+    font-size: 1.3rem;
+    color: var(--ink);
+}
+.pipeline .step-no {
+    float: right;
+    font-family: var(--font-hand);
+    font-size: 1.3rem;
+    color: var(--red);
+}
+/* Pen arrow to the next step: downwards when stacked, rightwards in a row */
+.pipeline li:not(:last-child)::after {
+    content: '↓';
+    position: absolute;
+    left: 50%;
+    bottom: -1.55rem;
+    translate: -50% 0;
+    font-size: 1.2rem;
+    color: var(--red);
+}
+
 /* ---------- Article footer ---------- */
 .article-foot {
     margin-top: 3.5rem;
