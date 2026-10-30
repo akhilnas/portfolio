@@ -22,20 +22,21 @@
 }
 
 html.dark {
-    --paper: #1f2233;
-    --paper-muted: #282c40;
-    --ink: #c9d2ea;
-    --text: #e6e1d3;
-    --text-soft: #a9a598;
-    --rule: #3d4362;
-    --red: #d98278;
+    /* Lamplight: the same notebook under a warm desk lamp */
+    --paper: #24211c;
+    --paper-muted: #2d2922;
+    --ink: #d9cdb4;
+    --text: #e8dfcc;
+    --text-soft: #b0a693;
+    --rule: #4a4236;
+    --red: #de8a80;
     --green: #8fb39c;
     --mustard: #d8b866;
-    --ruled-line: rgb(160 180 230 / 0.12);
+    --ruled-line: rgb(200 170 120 / 0.1);
     --highlight: rgb(216 184 102 / 0.28);
-    --code-bg: #2a2e44;
-    --nav-bg: rgb(36 40 59 / 0.85);
-    --grain-opacity: 0.07;
+    --code-bg: #2e2a23;
+    --nav-bg: rgb(36 33 28 / 0.85);
+    --grain-opacity: 0.09;
     color-scheme: dark;
 }
 
@@ -77,6 +78,17 @@ body::before {
 }
 html.dark body::before {
     filter: invert(1);
+}
+/* Lamp glow: warm light from the top-left, falling off into the far corner */
+html.dark body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 90vmax 70vmax at 0% 0%, rgb(255 196 120 / 0.12), transparent 60%),
+        radial-gradient(ellipse at 100% 100%, rgb(0 0 0 / 0.25), transparent 55%);
 }
 
 main {
@@ -531,6 +543,9 @@ html.dark .theme-toggle .sun {
     opacity: 0.7;
     background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 12'%3E%3Cpath d='M2 7 C 18 3, 30 10, 46 6 S 76 3, 92 6.5 S 112 8, 118 5' fill='none' stroke='%2333395a' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E")
         center / contain no-repeat;
+}
+html.dark .prose img {
+    filter: brightness(0.88) sepia(0.08);
 }
 html.dark .prose hr {
     filter: invert(0.8);
