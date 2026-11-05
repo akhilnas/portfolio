@@ -1,0 +1,6 @@
+title: A Primer on Large Language Model Design & Training
+url: https://djdumpling.github.io/2026/01/31/frontier_training.html
+author: Alex Wa
+savedDate: 2026-11-05
+tags: [llm, model-training, deep-learning]
+note: Good walkthrough of how LLMs get trained, from architecture to post-training, drawn from seven open-weight model reports
