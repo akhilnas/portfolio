@@ -1,0 +1,81 @@
+---
+title: 'Serving a 12B LLM on SageMaker That Scales to Zero'
+description: A CI/CD pipeline that packages a 12 GB+ Gemma 3 model in AWS CodeBuild and deploys it to a SageMaker Inference Component endpoint that scales down to zero instances when idle, so it costs nothing to keep online between requests.
+publishDate: 'Oct 13 2025'
+isFeatured: false
+---
+
+import Pipeline from '../../components/Pipeline.astro';
+
+## Background
+
+Open models like Gemma 3 12B are good enough for plenty of occasional jobs: reading a receipt, describing an image, tidying up a piece of text. The problem is hosting. A GPU endpoint that is switched on bills by the hour whether anyone calls it or not, and for a model that answers a handful of requests a day, almost all of that bill is idle time.
+
+I wanted a setup where the model is always _deployable_ but only _running_ when someone is actually using it, and where getting a new version live is a `git push` rather than an afternoon of clicking through the AWS console.
+
+## Project Scope
+
+To build a repeatable pipeline that takes a change to the inference code, assembles it with the model weights into a versioned artifact, and deploys it to a SageMaker endpoint that can scale all the way down to zero instances.
+
+Two constraints shaped the design. The model weights are over 12 GB, so they can't live in Git and are too large for a standard GitHub Actions runner to package. And the endpoint has to cost nothing when idle, which rules out the classic always-on SageMaker endpoint.
+
+## Architecture
+
+The weights live in S3 and never change between deploys. Only the small inference script is version-controlled. The pipeline joins the two at build time:
+
+<Pipeline
+    steps={[
+        { title: 'Push', body: 'A push to the gemma3-12b branch starts a GitHub Actions run, which assumes an AWS role through OIDC. No access keys are stored in GitHub.' },
+        { title: 'Build in CodeBuild', body: 'The heavy lifting is handed to AWS CodeBuild, because a standard GitHub runner doesn’t have the disk space for the weights.' },
+        { title: 'Package', body: 'Pull the raw weights from S3, add the inference code, tar it all and upload it as model-<commit>.tar.gz, so every artifact maps to a commit.' },
+        { title: 'Deploy', body: 'A boto3 script removes the previous model and config, creates new ones and attaches the model to the endpoint as an Inference Component.' }
+    ]}
+/>
+
+GitHub Actions only orchestrates. It authenticates and starts the CodeBuild job. Everything that touches the model happens inside AWS, close to the S3 buckets.
+
+## Scaling to Zero
+
+This is the part that took the most work. A classic SageMaker endpoint always keeps at least one instance running. To go lower, the endpoint is built from **Inference Components**: the endpoint config only describes the hardware, and the model is attached separately with its own resource requirements.
+
+- **The endpoint** runs on `ml.g5.2xlarge` with managed instance scaling, a minimum of **0** and a maximum of 2 instances, and least-outstanding-requests routing.
+- **The inference component** asks for one GPU and 12 GB of memory, and its copy count is allowed to drop to zero.
+- **Scaling in** is a target-tracking policy on invocations per copy (target 5) with a 15-minute cooldown. Once traffic stops, copies drain to zero and then SageMaker releases the instance.
+- **Scaling out from zero** needs a separate mechanism. Target tracking reads invocations _per copy_, and with zero copies there is nothing to measure, so it can never wake the endpoint up. Instead, a CloudWatch alarm watches `NoCapacityInvocationFailures`, the requests that arrive when no copy exists, and triggers a step-scaling policy that adds one copy.
+
+The trade-off is the cold start. The first request after an idle period fails, which is what sets off the alarm. The client has to retry once a GPU instance has been provisioned and the model has loaded. For an occasional-use model that is a fair price for not paying for idle hours.
+
+## Inference
+
+The served model is **Gemma 3 12B** in its multimodal form. A request carries a text prompt and a base64-encoded image, and the handler formats both through the model's chat template.
+
+To fit comfortably on a single 24 GB A10G GPU, the model is loaded in **4-bit NF4 quantisation** via bitsandbytes, with computation in bf16. One snag: the Hugging Face inference container ships an older `transformers` release that doesn't know the `gemma3` architecture, so the artifact carries its own `requirements.txt` that upgrades it when the container starts.
+
+## Lessons Learned
+
+- **Don't name the model in the endpoint config.** With Inference Components, the model is attached through the component. Setting `ModelName` on the endpoint config too is rejected by SageMaker.
+- **Scaling to zero and scaling from zero are two different problems.** Getting down to zero is a normal autoscaling policy. Coming back needs its own alarm on failed invocations.
+- **Clean up as you go.** Each deploy creates a new model and endpoint config. Without removing the previous ones, they pile up in the account.
+- **Weights and code have different lifecycles.** Keeping the 12 GB of weights out of Git and joining them with the code only at build time keeps the repository small and each deploy traceable to a commit.
+
+## What's Next
+
+I've started, but not finished, two changes:
+
+- **Moving serving to vLLM** on AWS's DJL/LMI container, for continuous batching and higher throughput than plain Transformers.
+- **Defining the endpoint in Terraform** instead of a boto3 script, so the infrastructure is declared rather than scripted.
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| CI trigger | GitHub Actions with OIDC authentication |
+| Build & deploy | AWS CodeBuild |
+| Artifact storage | Amazon S3 (raw weights + versioned `model.tar.gz`) |
+| Serving | Amazon SageMaker Inference Components on `ml.g5.2xlarge` |
+| Autoscaling | Application Auto Scaling + CloudWatch alarms |
+| Infrastructure scripting | Python, boto3 |
+| Model runtime | PyTorch, Hugging Face Transformers, bitsandbytes (4-bit NF4) |
+| Model | Gemma 3 12B (text + image) |
+
+The code is on [GitHub](https://github.com/akhilnas/custom_llm_deploy).

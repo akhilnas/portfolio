@@ -6,7 +6,6 @@ Design and theme ideas for the notebook look that haven't been built yet. Conten
 
 - **Taped photos:** project images look taped or paper-clipped onto the page, each tilted at a slightly different angle.
 - **Doodled icons:** swap the theme toggle, RSS and social icons for simple pen-style doodles.
-- **Lamplight dark mode:** dark mode as the same notebook under a desk lamp, with a warm glow from one corner and dimmer paper, instead of flat navy.
 - **Sketchy focus outlines:** keyboard focus draws a hand-drawn circle around the link instead of the default dashed outline.
 
 ## Motion
