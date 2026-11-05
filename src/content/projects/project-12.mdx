@@ -1,0 +1,121 @@
+---
+title: 'GridCast: Day-Ahead Electricity Price Forecasting for Germany'
+description: An end-to-end pipeline that forecasts German day-ahead power prices with XGBoost and judges the forecast by what it would earn in a battery backtest, not only by its error. All results are on paper, because a retail trader in Germany can't directly trade this market.
+publishDate: 'Jul 14 2026'
+isFeatured: true
+seo:
+  image:
+    src: '/portfolio/gridcast-dashboard.png'
+    alt: GridCast dashboard showing cumulative battery backtest profit against perfect foresight and a naive baseline
+---
+
+import Pipeline from '../../components/Pipeline.astro';
+
+![The dashboard's backtest panel: forecast-driven battery profit tracks perfect foresight and pulls ahead of the naive baseline](/portfolio/gridcast-dashboard.png)
+
+## Background
+
+German electricity is priced one hour at a time in a daily auction, and the next day's prices can swing from well above €100/MWh in the evening to below zero at midday when solar floods the grid. Forecasting those prices is a well-worn machine learning problem, and it's easy to stop once the error metric looks good.
+
+I wanted to answer a more practical question: what is a better forecast actually worth in money? And, once that was answered, could someone like me trade on it?
+
+## Project Scope
+
+To build the whole path from raw market data to a scheduled forecast, then hold the result to an economic test. Every model is compared against a simple baseline in euros, and a model only replaces the current one if it clearly earns it.
+
+The target is the DE_LU bidding zone, which covers Germany and Luxembourg. The project also grew two side tracks: spread forecasts against France and the Netherlands, and an attempt at natural gas futures.
+
+## Architecture
+
+<Pipeline
+    steps={[
+        { title: 'Ingest', body: 'Pull day-ahead prices plus load, wind and solar forecasts from ENTSO-E, and re-fetch the last three days because the platform revises its data.' },
+        { title: 'Validate & build features', body: 'Check schema, completeness and ranges, then build price lags, calendar features and residual load (load minus wind and solar).' },
+        { title: 'Forecast', body: 'XGBoost, exported to ONNX, produces 24 hourly prices with 80% prediction intervals.' },
+        { title: 'Monitor', body: 'Track error, feature drift (PSI, KS) and interval coverage, with alerts that fire once per episode. A human decides on retraining.' },
+        { title: 'Backtest', body: 'Schedule a simulated battery on the forecast, settle it at real prices, and compare it with a naive schedule and perfect foresight.' }
+    ]}
+/>
+
+A FastAPI service and a Streamlit dashboard read only the stored results and never call the model directly, so a failed run leaves the last good forecast on screen. A weekly champion/challenger job reports whether a retrained model beats the current one, and promotion needs a manual step and at least a 2% improvement. An optional stage writes a market report through Amazon Bedrock, but it isn't part of the results here.
+
+**Deployment status:** the scheduled ECS tasks, EventBridge rules and the rest of the AWS stack are defined in Terraform and pass validation, but I haven't provisioned them. Everything below ran locally on real ENTSO-E data.
+
+## Results
+
+### Grid data cut the error by 12%
+
+Adding day-ahead load, wind and solar forecasts took validation RMSE from 47.66 to 41.97 €/MWh on the same 252 training days and 63 validation days. Residual load became the top feature by gain, more than ten times ahead of the runner-up. That fits how the market works: what's left for conventional plants to cover largely sets the price.
+
+### A better forecast is worth a modest amount over naive
+
+The backtest runs a simulated 1 MWh / 0.5 MW battery with 88% round-trip efficiency from 1 May to 10 July 2026, before fees and degradation. Each day it charges and discharges on the forecast, and the naive baseline simply reuses the previous day's prices.
+
+| Schedule | Profit (71 days) | Capture ratio |
+|---|---|---|
+| Perfect foresight | €11,562 | 1.000 |
+| **GridCast forecast** | **€11,454** | **0.991** |
+| Naive (yesterday's prices) | €10,983 | 0.950 |
+
+The capture ratio is the share of perfect-foresight profit a schedule achieves. The model's training data ends on 8 May, so 8 of the 71 days overlap with it. On the 63 held-out days alone, the result is 0.990 against 0.948, almost the same.
+
+This is the number I find most useful: the forecast adds about €472 over naive, or roughly €6.60 per day per MWh of battery. Yesterday's prices already capture 95% of the value, because the daily shape of solar and demand repeats. The model's value is in that last 4%.
+
+![A forecast for 12 July 2026 with its 80% interval, following the shape of actual prices but dropping far below the actual midday low](/portfolio/gridcast-forecast.png)
+
+The chart shows why a 0.99 capture ratio can sit next to a €42 RMSE. On 12 July the model forecast a midday low of about −€80 when the actual low was much closer to zero, a large miss. It still found the right hours to charge and discharge, and that ordering is what a battery schedule depends on. Daily rank correlation between forecast and actual prices averaged 0.97.
+
+### Spread trades look promising, but the evidence is thin
+
+A paper strategy trading 1 MWh per hour on the sign of the forecast price difference was profitable on both pairs:
+
+| Pair | Profit | Capture ratio | Hit rate |
+|---|---|---|---|
+| Germany − France | +€2,084 | 0.49 | 66% |
+| Germany − Netherlands | +€1,234 | 0.55 | 65% |
+
+The window is only 12 days (1 to 12 July 2026), and the French and Dutch models had just 27 training days. It's a reason to keep looking, not a finding.
+
+## The Catch: A Retail Trader Can't Trade This
+
+A forecast being worth money doesn't mean I can collect it, and in Germany this turned out to be the biggest obstacle of the project.
+
+- **The auction isn't a retail venue.** EPEX SPOT's day-ahead market is wholesale, and its members are companies such as producers, suppliers, large consumers, aggregators and trading firms. I didn't find a broker that lets an individual trade tomorrow's hourly prices.
+- **Direct access is an institutional setup.** It takes a company, exchange admission with KYC checks and a trader exam, clearing through ECC, balancing arrangements as a Balance Responsible Party (or through a market access provider), and REMIT registration with the Bundesnetzagentur.
+- **Power futures don't express this signal.** EEX Phelix-DE futures are the professional instrument, and one month of baseload at 1 MW is about 720 MWh, or roughly €72,000 of notional at €100/MWh. They also settle on average prices over a month or longer, while this model's edge is in the hour-by-hour shape of the next day.
+- **CFDs are the nearest retail product, and still not the same thing.** Saxo launched a CFD on EEX German power futures for private investors in 2018. I couldn't confirm whether it's still offered, and it tracks futures rather than the next day's auction.
+- **Gas and carbon futures capture only part of the price.** TTF gas and EU carbon futures are more accessible and they influence power prices, but they miss the weather and renewables signal this model is best at.
+
+The one legitimate way for an individual to settle at day-ahead prices is as a consumer. German suppliers have had to offer dynamic tariffs since 2025, so a home battery or EV can charge in the cheap hours, which is the same strategy as the backtest. It's also a very different scale: a 10 kWh battery cycling daily on an €80/MWh spread earns roughly €200 to €350 a year.
+
+So every result on this page is a paper result, and this is why the gas futures track below exists: it was an attempt at a market a retail trader can actually reach.
+
+## What Didn't Earn Its Place
+
+- **Natural gas futures: no significant edge.** I pointed the same discipline at CME Henry Hub gas, which is available through mainstream futures brokers. A walk-forward backtest over 2018 to 2026 gave a 51.8% hit rate (z = 0.69) and a Sharpe ratio of −0.09 (z = −0.26), both indistinguishable from no edge, and it lagged buy-and-hold on risk-adjusted measures. My verdict was not to trade it, and not even to build a paper-trading loop on this result.
+- **The quantile model wasn't promoted.** A quantile XGBoost candidate (v0.4.0) was meant to improve the prediction intervals. It had worse pinball loss and worse coverage than a plain residual-based interval in every configuration I tried, so v0.3.0 stayed in production.
+- **Conformal intervals are sharper but under-cover.** Conformal prediction gave the lowest pinball loss, but reached only 0.56 to 0.67 coverage in testing against a target of 0.80, while the residual-based method reached 0.83 to 0.89. Its rolling window lags when volatility jumps. It's wired in and takes over once enough residuals accumulate, but with no live production history, I can't yet claim its coverage is right.
+
+## Lessons Learned
+
+- **Judge a forecast by the decision it drives.** RMSE alone would have hidden both how much the model helps and how little that help is worth over a trivial baseline.
+- **Check market access first.** I'd have saved time by asking who is allowed to trade this before asking how to predict it.
+- **Write the promotion rule before seeing the result.** A pre-agreed bar made it straightforward not to ship a model I'd just spent time building.
+- **Test significance before believing a backtest.** The gas results looked like a strategy until the z-scores showed they couldn't be told apart from chance.
+- **Power market data has sharp edges.** Delivery days run on Central European time rather than UTC, daylight saving changes the number of hours in a day, and ENTSO-E revises published values, so the pipeline re-fetches recent days and every stage is safe to re-run.
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Data source | ENTSO-E Transparency Platform API |
+| Model | XGBoost (plus an LSTM transfer-learning path), exported to ONNX |
+| Intervals | Conformal prediction, residual-based fallback |
+| Tracking | MLflow |
+| Serving | FastAPI, ONNX Runtime |
+| Dashboard | Streamlit, Plotly |
+| Monitoring | MAPE/RMSE, PSI, KS, interval coverage |
+| Infrastructure (defined, not provisioned) | Terraform, AWS ECS, EventBridge, S3, ALB |
+| Delivery & quality | Docker, GitHub Actions, pytest, ruff, mypy |
+
+The code is on [GitHub](https://github.com/akhilnas/gridcast).
