@@ -1,0 +1,111 @@
+---
+title: 'From Clinical Records to an Auditable Report'
+description: A four-stage pipeline that turns hospital and clinic data in almost any format into structured patient reports, built so every value in the output can be traced back to the source it came from.
+publishDate: 'Jan 01 2026'
+isFeatured: true
+work: true
+---
+
+import Pipeline from '../../components/Pipeline.astro';
+
+_This is work I did for my employer. I've left out client names and production figures and generalised some details, so this page covers the design and the reasoning rather than the results._
+
+## Background
+
+Getting data out of hospitals and clinics is expensive, in both money and people. Records arrive as whatever each site's systems happen to export, and someone has to turn them into something usable. We wanted to automate that with LLMs.
+
+One requirement shaped everything else: customers had to be shown that **every data point in the final output can be traced back to the original source**. That means either the exact text it was copied from or, for a derived value, the place in the source it was interpreted from.
+
+## My Role
+
+I was the technical and project lead on a team of two. I set the objectives and timelines from stakeholder feedback, designed the solution and planned the milestones, and a junior data engineer helped me implement it. The system is in production, with work still ongoing.
+
+## Architecture
+
+The first three stages are LangGraph state machines. The fourth is a plain chain of deterministic steps, orchestrated with Dagster.
+
+<Pipeline
+    steps={[
+        { title: 'Ingest', body: 'An LLM planner looks at the state of the run and picks the next action, until everything readable is assembled and the rest is quarantined. Records are then resolved to patients and reorganised per patient.' },
+        { title: 'Extract', body: 'Chunked LLM extraction of timeline events across 12 categories, such as diagnosis, medication and lab results. Every event must quote its source.' },
+        { title: 'Structured report', body: 'Per-section extraction, QA and a correction loop against Pydantic schemas. Clinical endpoints are computed in code, and drugs and diagnoses are coded through embedding retrieval plus an LLM.' },
+        { title: 'Finish', body: 'Ordered normalisation, enrichment and validation steps. Each one records field-level diffs to a provenance store.' }
+    ]}
+/>
+
+## Key Decisions
+
+### Traceability comes from the design, not a logging layer
+
+The audit trail is assembled from a mechanism at each stage, so the full path runs from source text to quote-verified timeline event, to report field, to finishing diff.
+
+- **At the bottom, a quote gate.** An extracted event has to cite a quote that is a literal substring of its source chunk, so it can be traced to that text by construction.
+- **Through the middle, a provenance mapping.** Timeline records carry codes that map back to their source. A second mapping, built during extraction, links every report field to the timeline entries it came from. If a field is assembled from several entries, it resolves to all of them, not just the last one written.
+- **At the end, recorded diffs.** Each finishing step stores what it changed and from what, so normalised and derived values can be replayed.
+
+Demonstrating this chain to customers was a deliverable in its own right.
+
+### The quote check is a string comparison, not an LLM
+
+Quote verification is the main defence against hallucination, and it's deliberately deterministic. It's also what makes the audit trail worth anything: one a model could talk itself into isn't an audit trail.
+
+A failed quote doesn't sink the whole chunk. Events that pass are accepted immediately and only the failures are re-extracted, so a partly bad chunk still makes progress. After 3 retries the chunk is quarantined.
+
+### An LLM picks the route in only one stage
+
+Ingestion is the only stage where an LLM chooses the control flow, and the reason is the input space. Clinical data can arrive in any format at all, including ones nobody anticipated, so no fixed set of routes can cover it.
+
+The first version fanned files out to a fixed set of format processors. It has since been refactored into a conditional router: an LLM planner inspects what has been discovered, handled and failed, then chooses the next action and hands control back to itself. An archive gets expanded and the files it reveals are routed on the next pass. A format nothing can parse is converted and re-routed.
+
+The risk of a planner choosing badly is limited in four ways:
+
+- The set of actions is closed.
+- The loop has both a step limit and a byte budget, so a payload it can't make progress on terminates instead of cycling.
+- Anything unreadable is quarantined rather than failing the run.
+- Assembling the output is the only terminal action.
+
+Extraction and reporting work against a known schema, so they keep fixed graphs. I made the opposite call on [a lab report platform](/portfolio/projects/project-14/) at about the same time, for the same reason: there the input space is closed.
+
+### Self-hosted inference is a constraint, and throughput pays for it
+
+Production runs on a self-hosted open-weights model, because keeping patient data on internal infrastructure is a privacy guarantee given to the participating hospitals and clinics. Throughput is therefore bounded by the hardware we own rather than by elastic API capacity. That's a cost of the guarantee, and I treat it as one instead of as a performance problem to explain away.
+
+### Smaller decisions
+
+- **The patient is the master key.** Hospital identifiers centre on visits, orders and bills, but clinical use centres on the patient. Identity resolution does a breadth-first search over an ID graph, up to 5 hops, to get from order to visit to patient.
+- **Schemas are the contract.** Sections and fields are Pydantic models, which keeps prompts, QA and validation aligned as the data model changes. What extraction may produce and what finishing must deliver are separate schemas, each with soft and strict validation.
+- **Clinical endpoints are computed in code.** Roughly 20 endpoints, such as overall and progression-free survival, are calculated deterministically rather than asked of a model.
+- **Finishing stays outside LangGraph.** Its transforms are mostly deterministic and need no agent loop, so a plain ordered chain is cheaper and easier to operate.
+- **Chunks of about 8,000 characters.** Larger chunks miss events, and smaller ones multiply LLM calls and cost.
+- **Terse section prompts.** Verbose prompts starve other sections of the token budget, and a custom prompt for therapy measurably hurt drug recall against the default.
+
+## How It Was Evaluated
+
+We used two separate measures:
+
+- **A/B comparison against the process it replaced.** An LLM judge made blind pairwise preference judgments over outputs from both, and it preferred the new pipeline more often, most clearly on biomarker and therapy extraction.
+- **Count-based section recall.** This is matched (key, value) pairs over the pairs in reference structured facts, after normalising dates and numbers and flattening lists so order doesn't matter.
+
+## Limits
+
+- An LLM's preference isn't accuracy, and it doesn't replace clinicians reviewing the edge cases.
+- The recall metric has known flaws. Every pair counts the same, so high-count, low-value fields can dominate a section. Schema internals present on only one side lower the score, some date formats still fail to normalise, and a mismatch in key structure scores zero even when the values agree.
+- The planner adds LLM calls and a failure mode that a fixed graph doesn't have. It's worth it here only because the inputs can't be listed in advance.
+
+## Lessons Learned
+
+- **Treat auditability as a design constraint.** It decided how extraction, reporting and finishing work, rather than being a reporting feature at the end.
+- **Let the input space decide how much agency to allow.** Open-ended inputs justified a planner, and known schemas didn't.
+- **Use a deterministic check wherever one is possible.** LLMs here are for places where the structure is ambiguous: ingest routing, ID resolution and narrative extraction.
+- **Know what your metric can't see.** The recall metric's flaws are worth keeping in mind whenever its scores are read.
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Agent graphs | LangGraph, LangChain |
+| Schemas | Pydantic |
+| Orchestration | Dagster assets, jobs and asset checks |
+| Retrieval for coding | FAISS, sentence-transformers |
+| Document handling | PyMuPDF, pandas, vision extraction for images |
+| Testing and tools | Pytest, Streamlit launcher |

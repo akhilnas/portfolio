@@ -1,0 +1,76 @@
+---
+title: 'Fine-Tuning an LLM to Replace Task-Specific Models, and Why We Kept Them'
+description: Could one fine-tuned Llama 2 replace a set of dedicated NLP models? I built the dataset and training setup on a single GPU and ran the evaluation. The dedicated models won, so they stayed in production.
+publishDate: 'Dec 01 2023'
+work: true
+---
+
+import Pipeline from '../../components/Pipeline.astro';
+
+_This is work I did for my employer. I've left out client names and production figures and generalised some details, so this page covers the design and the reasoning rather than the results._
+
+## Background
+
+My team ran a separate deep learning model for each NLP task, including classification, named entity recognition, information retrieval and relation extraction. Each one was trained, deployed and maintained on its own.
+
+Llama 2's release made it plausible to collapse that set into a single model. The company also held substantial proprietary medical datasets, so the question was whether those datasets could specialise one open-weights LLM onto the tasks the separate models were doing.
+
+## My Role
+
+I was the sole developer and researcher on this project. The model was used in a pilot and is no longer in use: newer LLMs now give sufficient performance out of the box.
+
+## Architecture
+
+<Pipeline
+    steps={[
+        { title: 'Build the task data', body: 'Proprietary cancer drug trial eligibility text and related biomedical corpora, covering NER, multi-label classification, QA and summarisation.' },
+        { title: 'Generate instructions', body: 'The Self-Instruct method proliferates instructions from seed prompts, alongside instruction induction, which derives the instruction from input/output examples. LangChain and Pydantic schemas automate the loop.' },
+        { title: 'Mix', body: 'Combine in a 1:1:1 ratio with samples of two public sets: WMT16 for German–English translation and OpenOrca for general instruction-following.' },
+        { title: 'Fine-tune', body: 'Train Llama 2 13B chat with Hugging Face Transformers, 4-bit quantisation and PEFT/LoRA.' },
+        { title: 'Evaluate', body: 'Compare against the un-tuned base model and the existing task-specific models.' }
+    ]}
+/>
+
+## Key Decisions
+
+### LoRA and quantisation, because of the hardware
+
+Full fine-tuning of a 13B model doesn't fit on one NVIDIA A100. Using a LoRA adapter with 4-bit quantisation is what made the largest model the hardware allowed trainable at all.
+
+### Spot instances, with resumability as a precondition
+
+Each run took 41 hours on a rented A100 spot instance. A job that long on a preemptible instance will meet a reclaim sooner or later, so resuming had to work before spot was an option at all. Checkpoints were written every few training steps, and no interruption ever cost a run.
+
+### Version the generated data
+
+Generated instruction datasets were versioned with DVC in buckets, rather than left as loose outputs of the generation loop.
+
+## How It Was Evaluated
+
+I compared the same model before and after fine-tuning on held-out proprietary test sets for classification and multi-label classification, and on the anatomy and clinical knowledge subsets of MMLU, chosen as adjacent to the medical domain.
+
+Fine-tuning improved on the base model in every comparison. Multi-label classification gained the most, and the other gains were modest.
+
+## The Outcome
+
+Consolidating models always had a cost: it trades individually tuned, strong small models for one model to serve, version and maintain. To be worth that, the general model had to match them.
+
+It didn't. On tasks that already had a dedicated model, the task-specific models still outperformed the fine-tuned Llama 2, so we didn't consolidate and the specialised models stayed in production. The organisation moved to general-purpose LLMs later, once off-the-shelf models were strong enough to do the work without fine-tuning.
+
+## Lessons Learned
+
+- **Compare against what's already in production.** Beating the base model was the easy test. The one that decided the outcome was beating the incumbents.
+- **Make long jobs resumable before you need them to be.** At 41 hours a run, checkpointing was what made cheap hardware usable.
+- **Hardware limits can set the design.** The choice of model and training method followed directly from what fits on one GPU.
+- **A negative result is still an answer.** The evaluation showed that consolidation wasn't worth it yet.
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Training | Hugging Face Transformers, PEFT/LoRA, DeepSpeed |
+| Base model | Llama 2 13B chat |
+| Instruction generation | LangChain, Pydantic |
+| Public data | WMT16, OpenOrca |
+| Data versioning | DVC |
+| Hardware | One NVIDIA A100 spot instance |

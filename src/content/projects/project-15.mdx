@@ -1,0 +1,88 @@
+---
+title: 'Mapping Accounts Across Charts of Accounts'
+description: A multi-service engine that ingests a real-estate manager's financial documents, maps service providers' accounts onto the client's chart of accounts, and sends uncertain cases to a person for approval.
+publishDate: 'Jul 01 2026'
+isFeatured: true
+work: true
+---
+
+import Pipeline from '../../components/Pipeline.astro';
+
+_This is work I did for my employer. I've left out client names and production figures and generalised some details, so this page covers the design and the reasoning rather than the results._
+
+## Background
+
+A real-estate manager receives general ledgers, trial balances, rent rolls, balance statements and chart-of-accounts mappings from external service providers. These arrive in effectively any file type, layout or language, and account mapping and validation depended on a legacy ERP system.
+
+The goal was automated ingestion, with no manual re-keying and no separate parser for each provider, ending in ERP-format output. The mapping work is what I built most deeply, but it's one stage of that larger flow.
+
+## My Role
+
+I owned the project from conception through production. I gathered requirements in direct conversations with the client, designed the solution and system architecture, and implemented it alongside a junior AI engineer. The first phase is in production and the client's customers are using the platform.
+
+The boundary with the client is deliberately narrow: their platform calls this engine's REST API and gets a response back. The engine is a service they consume, and it never writes into their platform.
+
+## Architecture
+
+Four Docker-containerised services talk to each other over REST and share a PostgreSQL database for working tables.
+
+<Pipeline
+    steps={[
+        { title: 'Classify', body: 'TF-IDF plus engineered features go into a random forest, with an LLM as a fallback only when the classifier cannot decide.' },
+        { title: 'Map', body: 'Approved mappings resolve by direct lookup. Anything else goes to semantic matching, which returns a suggestion with a confidence score.' },
+        { title: 'Check consistency', body: 'Reconcile general ledger against trial balance over a given period, including FX balance checks against central bank reference rates.' },
+        { title: 'Validate and output', body: 'Confident mappings go to final validation and produce transmission-ready output, with error tags and drill-down diagnostics.' }
+    ]}
+/>
+
+A fourth service, the error manager, raises an explicit error for an unsupported input format rather than failing silently or guessing.
+
+## Key Decisions
+
+### Take the cheap path first
+
+Sending every document to a model would have been the easy design. Instead, a classical classifier handles the common case and the LLM only sees what it can't decide. That keeps cost and latency down, and the ordinary path stays deterministic and inspectable.
+
+The mapping service has the same shape. An account whose mapping was already approved resolves exactly, with no model call. Only the rest reaches semantic matching, which uses embeddings of account descriptions and RAG-style retrieval over accounting guidelines in PostgreSQL with pgvector.
+
+### Escalate to a person below a confidence threshold
+
+This output feeds a financial process that has to be auditable end to end, so I chose confidence-gated escalation over full autonomy. At or above 90% confidence, a mapping proceeds to final validation. Below that, the agent raises an `ACTION_REQUIRED` escalation and the case goes to a person.
+
+The client's own team handles these in a React validator console, where any mapping that hasn't been approved before needs a deliberate human decision.
+
+### Make every approval count
+
+An approval doesn't just settle one case. It's stored, so the same account resolves through direct lookup next time, and the input updates a knowledge graph and accounting ontology. Each human decision should mean less work on the next file.
+
+### Use agents only where a parser can't be written
+
+LLM agents are here for one reason: format variety from providers is unbounded, so a fixed parser can't be written in advance. Everywhere the structure is known, the system doesn't use them.
+
+## How It Was Evaluated
+
+Classification and mapping were both measured on one small test set of files, against an accuracy target for mapping agreed with the client, which it reached. I treat the 90% escalation threshold as a separate thing: it's a setting, not a result.
+
+## Limits
+
+- The test set was small, which limits how far those results generalise to production volume.
+- People remain part of the process for uncertain cases, by design.
+- This is the first phase, and the mapping stage is only part of the wider ingestion flow.
+
+## Lessons Learned
+
+- **Start from the client's process.** The requirements came from conversations about how the client wanted the system to work, and auditability shaped the human approval step.
+- **Keep the integration boundary simple.** A REST API that only returns responses makes clear what's ours and what's theirs.
+- **Keep results and settings apart.** An accuracy figure and a confidence threshold can look alike in a summary, but they mean very different things.
+- **Design for corrections.** A human-in-the-loop step costs less over time if each decision feeds back into the system.
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| API and services | Python, FastAPI, Uvicorn, Pydantic, Docker |
+| Classifier | scikit-learn, pandas, NumPy |
+| Agents | LangGraph, LangChain |
+| Data and retrieval | PostgreSQL, pgvector, SQLAlchemy, asyncpg |
+| Domain knowledge | Knowledge graph and accounting ontology |
+| Front end | React, Vite, TypeScript |

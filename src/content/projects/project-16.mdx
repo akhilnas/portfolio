@@ -1,0 +1,76 @@
+---
+title: 'Classifying Documents Without Class Labels'
+description: A semi-supervised method that discovers document templates by clustering and uses a small set of labelled document pairs in place of corpus-scale annotation against a fixed class list.
+publishDate: 'Jun 01 2022'
+work: true
+---
+
+import Pipeline from '../../components/Pipeline.astro';
+
+_This is work I did for my employer. I've left out client names and production figures and generalised some details, so this page covers the design and the reasoning rather than the results._
+
+## Background
+
+We were ingesting large-scale real-world data from hospitals into an oncology document-processing programme, and pages and documents needed classifying by content. The first approach was supervised, and it needed large-scale human annotation that didn't carry over to proprietary datasets.
+
+The limit was annotation capacity rather than model quality, so a better classifier wouldn't have helped. We needed to change what humans were asked to label.
+
+## My Role
+
+I led development end to end on this internal tool. Work from this project was filed as a US patent.
+
+## Method
+
+The idea is that documents of the same kind tend to share a structure, so the structure can identify the class without anyone defining the classes first.
+
+<Pipeline
+    steps={[
+        { title: 'Find the headers', body: 'LayoutLM, a layout-aware document model, identifies the headers on each document using page geometry as well as text.' },
+        { title: 'Represent the document', body: 'Compute TF-IDF over those headers. That vector is the representation, and the body text is not embedded.' },
+        { title: 'Derive templates', body: 'Cluster the vectors across the whole corpus. Each cluster is a template, discovered from the data rather than specified in advance.' },
+        { title: 'Classify', body: 'Decide which cluster a document belongs to, with the decision boundaries placed to maximise F1 on labelled pairs.' }
+    ]}
+/>
+
+## Key Decisions
+
+### Label pairs, not classes
+
+Instead of annotating documents against a class list, a person looks at a small sample of pairs and judges each one similar or dissimilar. These labels are the only supervision, and they place the decision boundaries. That's why I call the method semi-supervised rather than unsupervised: it still uses human judgement, but it changes what the human has to judge.
+
+Answering "are these two documents the same kind of thing?" takes no class taxonomy and no agreement on what the classes are. The supervised approach needed a fixed class list and annotation at corpus scale before any of it could run.
+
+### Let the corpus decide how many classes exist
+
+Pairwise judgements never commit to a class count, and template discovery doesn't need one either. The number of document classes comes from the corpus rather than from a preset list.
+
+### Represent a document by its headers
+
+Headers carry a document's structural identity, which is what separates one template from another, and they keep the representation small.
+
+## How It Was Evaluated
+
+The evaluation follows Marina Meilă, _Comparing Clusterings: An Axiomatic View_ (ICML 2005), which axiomatically characterises criteria for comparing partitions. F1 is computed over pair decisions from the similar/dissimilar judgements, with the Mirkin metric used to compare partitions.
+
+The Mirkin metric counts the pairs that are co-clustered in one partition but not the other. Because it's a pair-counting measure, pairwise labels are its natural ground truth, and the evaluation and the labelling method fit together.
+
+## Limits
+
+- By construction, two documents with the same headers but different body content look almost identical under this representation. It tells you which template a document follows, not what it says.
+- The method still needs human judgement, in a much smaller and simpler form.
+
+## Lessons Learned
+
+- **Find the real bottleneck.** The constraint was annotation capacity, and that pointed to a different kind of labelling rather than a different model.
+- **Ask what the label needs to contain.** A pair judgement carried enough supervision for this problem without requiring a taxonomy.
+- **Choose metrics that match your labels.** A pair-counting metric made a small set of pairwise judgements directly usable for evaluation.
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Layout model | LayoutLM |
+| Representation | TF-IDF over identified headers |
+| Template discovery | Clustering |
+| Evaluation | Pairwise F1, Mirkin metric |
+| Language | Python |

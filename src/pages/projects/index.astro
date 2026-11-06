@@ -6,6 +6,8 @@ import Base from '../../layouts/Base.astro';
 import { sortItemsByDateDesc } from '../../utils/content';
 
 const projects = (await getCollection('projects')).sort(sortItemsByDateDesc);
+const workProjects = projects.filter((p) => p.data.work);
+const personalProjects = projects.filter((p) => !p.data.work);
 ---
 
 <Base title="Projects" description="Things I've built: ML systems, research code and side projects.">
@@ -14,5 +16,46 @@ const projects = (await getCollection('projects')).sort(sortItemsByDateDesc);
         <p class="lede">Things I've built, from physics simulations to ML systems.</p>
         <Squiggle />
     </header>
-    <EntryList items={projects} section="projects" />
+    <div class="top-tabs" role="tablist" aria-label="Project groups">
+        <a id="tab-work" href="#work" role="tab" aria-controls="panel-work" aria-selected="false" tabindex="-1">At work</a>
+        <a id="tab-own" href="#own" role="tab" aria-controls="panel-own" aria-selected="true">On my own</a>
+    </div>
+    <section id="panel-work" class="top-tab-panel" role="tabpanel" aria-labelledby="tab-work">
+        <EntryList items={workProjects} section="projects" />
+    </section>
+    <section id="panel-own" class="top-tab-panel" role="tabpanel" aria-labelledby="tab-own">
+        <EntryList items={personalProjects} section="projects" />
+    </section>
+    <script is:inline>
+        (() => {
+            const tabs = [...document.querySelectorAll('.top-tabs [role="tab"]')];
+            const select = (active) => {
+                for (const tab of tabs) {
+                    const on = tab === active;
+                    tab.setAttribute('aria-selected', on);
+                    tab.tabIndex = on ? 0 : -1;
+                    document.getElementById(tab.getAttribute('aria-controls')).hidden = !on;
+                }
+            };
+            const fromHash = () =>
+                tabs.find((t) => t.hash === location.hash) ?? document.getElementById('tab-own');
+
+            tabs.forEach((tab, i) => {
+                tab.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    select(tab);
+                    // Keep the group in the URL so returning from a project reopens it
+                    history.replaceState(null, '', tab.hash);
+                });
+                tab.addEventListener('keydown', (e) => {
+                    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+                    const next = tabs[(i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length];
+                    next.focus();
+                    next.click();
+                });
+            });
+            addEventListener('hashchange', () => select(fromHash()));
+            select(fromHash());
+        })();
+    </script>
 </Base>

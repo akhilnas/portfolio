@@ -1,0 +1,102 @@
+---
+title: 'Automating Lab Reports Without Letting the LLM Do the Maths'
+description: A multi-agent platform that turns raw bioassay data into structured, QA-gated scientific reports. It uses a fixed phase graph in which LLMs reason and write, and code does every calculation.
+publishDate: 'Jan 01 2026'
+isFeatured: true
+work: true
+---
+
+import Pipeline from '../../components/Pipeline.astro';
+
+_This is work I did for my employer. I've left out client names and production figures and generalised some details, so this page covers the design and the reasoning rather than the results._
+
+## Background
+
+A research lab's scientists draft a report for each study by hand from tabular readouts, plate maps, flow cytometry files and gel or blot images. The goal was to go from that raw data to a structured, quality-checked report that's ready for a client.
+
+The domain sets the main rule. A fitted curve parameter in a scientific report has to be reproducible, and a model can't be allowed to produce one.
+
+## My Role
+
+I was part of the development team. The platform is in active development and the lab's researchers currently use it as a productivity tool.
+
+## Architecture
+
+The platform has four workflows on one foundation: report generation, protocol generation, quotation building and an analysis tool. They sit behind one authenticated dashboard, which launches each workflow as a subprocess and streams its progress. The report workflow is the main one:
+
+<Pipeline
+    steps={[
+        { title: 'Plan', body: 'A planner agent sets the scope, sections and QC priorities before anything else runs.' },
+        { title: 'Discover and compute', body: 'Build a manifest of the assay files, then run the matching deterministic tools and write figures and metrics to disk.' },
+        { title: 'Read images', body: 'A vision model reads plate images and Western blot scans, so figures count as evidence in the later phases.' },
+        { title: 'Analyse and check', body: 'Analyst agents work through results in batches, followed by a QA phase.' },
+        { title: 'Outline and write', body: 'An architect agent produces the outline, a writer produces the full markdown, and the report is exported.' }
+    ]}
+/>
+
+## Key Decisions
+
+### LLMs reason, code computes
+
+LLMs handle planning, interpretation and narrative. Code handles EC50 curve fitting, qPCR analysis, plate QC and quotation pricing. The LLM never computes a fitted parameter or a euro total, and that separation is what keeps the numbers auditable and reproducible.
+
+The deterministic tools cover dose-response fits (EC50, Hill slope, R²), plate quality metrics (Z′, signal-to-background, CV%), FACS binding, confluency over time, transfection and qPCR ΔΔCt.
+
+### A fixed graph, because the inputs are closed
+
+I evaluated autonomous agent swarms and open-ended ReAct loops and rejected both. The LLM doesn't choose the next phase or spawn new agents: a Python runner sequences the phases, and the agents don't call each other. That keeps operations and debugging predictable.
+
+Input still changes what happens, just not the route. A profiling step classifies the input folder by archetype and readout type, and a registry runs only the matching tools.
+
+This works because laboratory instruments emit a finite set of file formats and readout types, so every route worth taking can be listed in advance. On [a clinical data pipeline](/portfolio/projects/project-13/) I answered the same question the other way and gave an LLM planner the routing, because hospital data has no such limit. Both systems follow one rule: the input space decides how much agency the system needs.
+
+### Outline first, then write
+
+The report is written from an outline rather than from one monolithic drafting prompt, which makes its structure controllable.
+
+### Keep a person in the loop
+
+Scientists can watch runs on a live dashboard and steer output through a report assistant chat. Workflow snapshots allow a report to be regenerated from saved state without repeating the computation, and a finished report can go into the analysis tool for accept/reject editing and re-export.
+
+### Smaller decisions
+
+- **Retrieval first for protocols and quotes.** Drafts are grounded in the historical corpus, so the model doesn't invent client names or totals.
+- **Tiered models behind one gateway.** LiteLLM gives access to a reasoning model for planners and architects and a fast model for analyst and QA volume, with a third as a fallback.
+- **Fail-fast timeouts.** An earlier configuration of 900 seconds with 5 retries produced multi-hour hangs, so it now gives up after 2.
+
+## How It Was Evaluated
+
+An offline harness scores evaluation packs built from real historical studies, using an LLM judge together with deterministic anchors. Each dimension is scored from 0 to 5:
+
+- Retrieval coverage
+- Numeric grounding
+- Input understanding
+- Report depth
+- Figure relevance
+- Alignment with scientists' feedback
+- Hallucination risk, which is tracked for audit and kept out of the headline score
+
+## Limits
+
+- **Two dimensions are clearly weakest:** figure relevance and alignment with scientists' feedback. They're the current work items.
+- **QA results aren't aggregated.** The quality reviewer gives each run a verdict of PASS, PASS WITH CAVEATS or HOLD, but those verdicts aren't rolled up into a rate yet.
+- **The time saving is modelled, not measured.** It comes from scientists' estimates of how long drafting and review take, not from instrumented A/B telemetry, so I don't quote it here as a result.
+- **The judge is an LLM.** Deterministic anchors help, but this isn't the same as review by scientists.
+
+## Lessons Learned
+
+- **Decide what the model is never allowed to do.** "The LLM never computes a fitted parameter or a total" is a simple rule, and it keeps those numbers reproducible.
+- **Reject agent autonomy when you can list the routes.** If the routes can be listed, a fixed graph with adaptive tools gives you the specialisation without the unpredictability.
+- **Write down what you can't yet claim.** A modelled time saving and an unaggregated QA verdict are open items, and saying so keeps them from turning into claims.
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Agents | CrewAI, in a Python sequential, phase-gated runner |
+| LLM access | LiteLLM gateway with retries and token telemetry |
+| Computation | pandas, NumPy, SciPy, matplotlib |
+| Documents | ReportLab, PyMuPDF, python-docx, python-pptx, openpyxl, LibreOffice |
+| Application | FastAPI, HTML/JS single-page dashboard |
+| Storage | S3, MongoDB |
+| Delivery | Docker, GitLab CI with a quality gate |
